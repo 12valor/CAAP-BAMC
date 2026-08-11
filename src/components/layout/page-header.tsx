@@ -4,6 +4,7 @@ type PageHeaderProps = {
   actions?: React.ReactNode;
   description: string;
   eyebrow?: string;
+  preview?: boolean;
   title: string;
 };
 
@@ -11,6 +12,7 @@ export function PageHeader({
   actions,
   description,
   eyebrow,
+  preview = true,
   title,
 }: PageHeaderProps) {
   return (
@@ -22,7 +24,7 @@ export function PageHeader({
               {eyebrow}
             </p>
           ) : null}
-          <Badge variant="info">Design preview</Badge>
+          {preview ? <Badge variant="info">Design preview</Badge> : null}
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
           {title}

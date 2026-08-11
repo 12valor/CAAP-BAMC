@@ -3,13 +3,14 @@ import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
+import type { Database } from "@/types/database";
 import { getPublicEnvironment } from "@/validation/environment";
 
 export async function createClient() {
   const cookieStore = await cookies();
   const environment = getPublicEnvironment();
 
-  return createServerClient(
+  return createServerClient<Database>(
     environment.NEXT_PUBLIC_SUPABASE_URL,
     environment.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     {

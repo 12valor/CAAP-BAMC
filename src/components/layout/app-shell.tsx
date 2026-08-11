@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   Bell,
   Landmark,
+  LogOut,
   Menu,
   PanelLeftClose,
   PanelLeftOpen,
@@ -17,7 +18,7 @@ import {
   type NavigationItem,
   type NavigationRole,
 } from "@/config/navigation";
-import { shellUserFixtures } from "@/fixtures/design-preview";
+import { logoutAction } from "@/app/auth-actions";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,10 @@ import {
 type AppShellProps = {
   children: React.ReactNode;
   role: NavigationRole;
+  user: {
+    displayName: string;
+    roleLabel: string;
+  };
 };
 
 type NavigationLinkProps = {
@@ -55,7 +60,8 @@ function isNavigationItemActive(pathname: string, href: string) {
     return true;
   }
 
-  const isSectionRoot = href === "/admin" || href === "/employee";
+  const isSectionRoot =
+    href === "/admin/dashboard" || href === "/portal/overview";
   return !isSectionRoot && pathname.startsWith(`${href}/`);
 }
 
@@ -155,10 +161,19 @@ function ProductIdentity({ collapsed = false }: { collapsed?: boolean }) {
   );
 }
 
-export function AppShell({ children, role }: AppShellProps) {
+function initialsFor(displayName: string) {
+  return displayName
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
+}
+
+export function AppShell({ children, role, user }: AppShellProps) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
-  const user = shellUserFixtures[role];
+  const initials = initialsFor(user.displayName) || "U";
   const currentItem =
     navigationByRole[role].find((item) =>
       isNavigationItemActive(pathname, item.href),
@@ -201,7 +216,7 @@ export function AppShell({ children, role }: AppShellProps) {
             )}
           >
             <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary font-bold text-secondary-foreground">
-              {user.initials}
+              {initials}
             </div>
             <div className={cn("min-w-0", collapsed && "sr-only")}>
               <p className="truncate text-sm font-semibold">{user.displayName}</p>
@@ -247,7 +262,7 @@ export function AppShell({ children, role }: AppShellProps) {
                   <Separator />
                   <div className="flex items-center gap-3 p-4">
                     <div className="flex size-10 items-center justify-center rounded-full bg-secondary font-bold text-secondary-foreground">
-                      {user.initials}
+                      {initials}
                     </div>
                     <div>
                       <p className="text-sm font-semibold">{user.displayName}</p>
@@ -296,6 +311,12 @@ export function AppShell({ children, role }: AppShellProps) {
                   0
                 </Badge>
               </Button>
+              <form action={logoutAction}>
+                <Button type="submit" variant="outline">
+                  <LogOut aria-hidden="true" />
+                  <span className="hidden sm:inline">Sign out</span>
+                </Button>
+              </form>
             </div>
           </header>
 

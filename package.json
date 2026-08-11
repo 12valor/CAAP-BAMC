@@ -15,7 +15,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "test:e2e:install": "playwright install chromium"
+    "test:e2e:install": "playwright install chromium",
+    "bootstrap:admin": "node --env-file=.env.local scripts/bootstrap-admin.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "5.7.1",

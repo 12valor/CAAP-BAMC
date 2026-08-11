@@ -3,8 +3,9 @@
 ## Scope
 
 Phases 0 and 1 establish project conventions and the shared application shell.
-They do not define financial tables, calculations, imports, document workflows,
-or account-management behavior.
+Phase 2 adds the database, authorization, and audit foundation. Phase 3 adds
+authentication and administrator-managed accounts without adding financial
+business modules, Storage buckets, or calculation formulas.
 
 ## Runtime and application framework
 
@@ -68,16 +69,79 @@ and repositories must not import fixture data.
 - The future document bucket must be private and accessed through short-lived
   signed URLs after server-side authorization.
 
-## Database conventions for future phases
+## Authentication and account management
 
-- Every exposed table must enable RLS before access is granted.
-- Employee policies must bind rows to the authenticated employee identity.
-- Financial amounts use PostgreSQL `numeric`, never floating-point types.
-- Time-bearing columns use `timestamptz`.
-- Financial records use soft deletion. Restore and soft-delete operations must
-  create audit entries; permanent-delete actions are not permitted.
-- Database changes are delivered as ordered migrations. Generated TypeScript
-  database types replace the Phase 0 placeholder after the first schema phase.
+- The sign-in form accepts a normalized username. A server-only mapping resolves
+  it to a generated internal Auth email identifier; neither the mapping nor an
+  employee-directory search is available to browser roles.
+- Supabase Auth remains the only password store. Generated passwords are returned
+  once by the account action and kept only in transient client state until the
+  administrator dismisses them. Existing passwords cannot be retrieved.
+- `profiles.role` and account status are checked afresh on the server for every
+  protected layout, action, and route handler. The proxy refreshes cookies and
+  provides an early redirect, but it is not an authorization boundary.
+- Active administrators enter at `/admin/dashboard`; active employees enter at
+  `/portal/overview`. A user who requests the other role's route is redirected
+  to their own role home.
+- Disabling an account sets both the application profile status and a long-lived
+  Supabase Auth ban. Database RLS checks the active profile immediately, so an
+  already-issued access token cannot continue reading protected records.
+- Login protection counts HMAC-pseudonymized username and network fingerprints
+  in a 15-minute window. It permits five failed attempts per username and twenty
+  per network before failing closed. Raw usernames, IP addresses, and passwords
+  are never written to login activity.
+- Account creation, password reset, and status changes use server-only Supabase
+  secret-key clients plus service-only database RPCs. Security actions append
+  audit records with reasons; passwords never enter an audit snapshot.
+- The first administrator is created by the one-time `bootstrap:admin` script.
+  The script refuses to run after an administrator exists and prints a generated
+  password only once.
+
+## Database ownership and authorization
+
+- `profiles.id` is the one-to-one application identity for `auth.users.id`.
+  `profiles.role` is the canonical `admin | employee` authorization source;
+  authorization never reads `user_metadata`.
+- `employee_profiles.profile_id` is nullable and unique so imported employee
+  records can exist before an Auth account is provisioned.
+- Every public table has RLS enabled. Anonymous users receive no Data API table
+  privileges. Employees receive read-only policies scoped through their linked
+  employee record. Administrators receive managed select, insert, and update
+  policies, but no hard-delete policy or privilege.
+- Private, fixed-search-path helper functions resolve the current employee and
+  administrator role. They validate `auth.uid()` and expose only narrowly
+  granted execution rights.
+- Application mutations must still perform server-side authorization; RLS is a
+  mandatory second boundary, not a replacement for mutation checks.
+
+## Data lifecycle and audit
+
+- Mutable records carry creator/updater and soft-deletion metadata. Deletion
+  requires a reason, and database triggers reject physical deletion.
+- `audit_logs` is an ordered bigint append-only ledger. Triggered create,
+  update, soft-delete, restore, and settings-change events record actor, table,
+  record identifier, old/new JSON snapshots, reason, and `timestamptz`.
+- Password resets and account status changes are recorded by trusted Phase 3
+  workflows. Import audit actions remain reserved for a later phase. Normal
+  application roles cannot insert, update, or delete audit rows; administrators
+  can only select them.
+- Leave balances are derived from posted leave-ledger deltas. Phase 2 does not
+  calculate accruals.
+
+## Financial configuration and pagination
+
+- Money uses unrestricted PostgreSQL `numeric` until currency scale and
+  rounding are approved. Time-bearing lifecycle and audit fields use
+  `timestamptz`; business-effective dates use `date`.
+- Configurable rules use an identifier-style `calculation_strategy`, JSON-object
+  parameters, and a configuration version. The current strategy is `manual`;
+  no configuration contains executable SQL or JavaScript.
+- GL, MPL, and EL are editable rows in `loan_types`, not application enums.
+- Lists use stable `(business_date, id)` or equivalent descending keyset
+  cursors backed by partial indexes that exclude soft-deleted rows. OFFSET
+  pagination is not part of the application convention.
+- Database changes are delivered as ordered migrations. `src/types/database.ts`
+  is generated from the applied public schema.
 - No business formula is implemented until its inputs, rounding, effective
   dates, and exceptions are approved.
 
@@ -85,7 +149,9 @@ and repositories must not import fixture data.
 
 - Vitest covers pure utilities and Zod validation.
 - React Testing Library covers accessible component behavior.
-- Playwright covers critical authenticated flows when those flows exist.
+- Playwright covers protected-route redirects and role isolation. Authenticated
+  cases require isolated E2E accounts supplied through environment variables;
+  they skip rather than create test identities in a connected project.
 - Supabase database tests (pgTAP or equivalent) accompany every RLS policy.
 - Required delivery checks are lint, type checking, unit/component tests, and a
   production build. Schema phases also run database and RLS tests.

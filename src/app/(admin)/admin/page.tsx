@@ -1,11 +1,5 @@
-import type { Metadata } from "next";
-
-import { DashboardPreview } from "@/components/preview/dashboard-preview";
-
-export const metadata: Metadata = {
-  title: "Administrator workspace",
-};
+import { redirect } from "next/navigation";
 
 export default function AdminPage() {
-  return <DashboardPreview role="admin" />;
+  redirect("/admin/dashboard");
 }
