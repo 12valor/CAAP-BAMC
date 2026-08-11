@@ -1,5 +1,5 @@
-import { PageLoading } from "@/components/feedback/page-loading";
+import { ShellPageLoading } from "@/components/feedback/shell-page-loading";
 
 export default function AdminLoading() {
-  return <PageLoading label="Loading administrator page" />;
+  return <ShellPageLoading />;
 }

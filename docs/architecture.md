@@ -2,9 +2,9 @@
 
 ## Scope
 
-Phase 0 establishes project conventions only. It does not define financial
-tables, calculations, imports, document workflows, or account-management
-screens.
+Phases 0 and 1 establish project conventions and the shared application shell.
+They do not define financial tables, calculations, imports, document workflows,
+or account-management behavior.
 
 ## Runtime and application framework
 
@@ -27,7 +27,11 @@ src/
   components/
     feedback/     Loading, empty, success, and error presentation
     layout/       Shared page and application shells
+    patterns/     Reusable table, filter, dialog, and summary patterns
+    preview/      Phase-specific visual previews without business behavior
     ui/           shadcn/ui source components
+  config/         Typed application navigation and static configuration
+  fixtures/       Isolated synthetic data used only for design previews
   lib/
     permissions/  Server authorization helpers and conventions
     supabase/     Browser, server, and proxy clients
@@ -45,6 +49,10 @@ Route groups organize code but do not authorize requests. Every protected page,
 Server Action, and Route Handler must validate the signed-in identity and role
 on the server. Every mutation must repeat authorization at the mutation
 boundary.
+
+Phase 1 route placeholders are intentionally nonfunctional. Preview components
+may import from `src/fixtures`, but future database clients, actions, services,
+and repositories must not import fixture data.
 
 ## Supabase boundary
 

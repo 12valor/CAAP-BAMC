@@ -1,5 +1,5 @@
-import { PageLoading } from "@/components/feedback/page-loading";
+import { ShellPageLoading } from "@/components/feedback/shell-page-loading";
 
 export default function EmployeeLoading() {
-  return <PageLoading label="Loading employee page" />;
+  return <ShellPageLoading />;
 }
