@@ -7,7 +7,7 @@ export const IMPORT_SHEETS = {
   Transactions:["employee_number","type_code","date","direction","amount","reference_number","description"],
   Loans:["employee_number","loan_type_code","account_number","start_date","maturity_date","principal","interest_rate","total_payable","term_count","schedule_method","status","notes"],
   LoanSchedules:["loan_type_code","account_number","installment_number","due_date","principal_due","interest_due","penalty_due","other_due","total_due","generation_method","status"],
-  LoanPayments:["loan_type_code","account_number","payment_date","amount","reference_number","notes"],
+  LoanPayments:["loan_type_code","account_number","transaction_type_code","payment_date","amount","reference_number","notes"],
   Rebates:["employee_number","rebate_type_code","rebate_date","amount","status","reason"],
   LeaveBalances:["employee_number","leave_type_code","date","quantity_delta","notes"],
   LeaveHistory:["employee_number","leave_type_code","date","entry_kind","quantity_delta","reference_number","notes"],
@@ -18,7 +18,7 @@ const entityBySheet:Record<keyof typeof IMPORT_SHEETS,ImportEntity>={Employees:"
 export type ParsedImportRow={rowNumber:number;entityType:ImportEntity;data:Record<string,string|boolean|Record<string,unknown>>;errors:string[];warnings:string[]};
 const moneyFields=new Set(["amount","principal","interest_rate","total_payable","principal_due","interest_due","penalty_due","other_due","total_due","quantity_delta"]);
 const dateFields=new Set(["date","hire_date","start_date","maturity_date","due_date","payment_date","rebate_date","document_date"]);
-const required:Record<ImportEntity,string[]>={employees:["employee_number","first_name","last_name"],opening_balances:["employee_number","type_code","date","direction","amount"],transactions:["employee_number","type_code","date","direction","amount"],loans:["employee_number","loan_type_code","account_number","start_date","principal"],loan_schedules:["loan_type_code","account_number","installment_number","due_date","total_due"],loan_payments:["loan_type_code","account_number","payment_date","amount"],rebates:["employee_number","rebate_type_code","rebate_date","amount"],leave_balances:["employee_number","leave_type_code","date","quantity_delta"],leave_history:["employee_number","leave_type_code","date","entry_kind","quantity_delta"],document_metadata:["employee_number","category_code","storage_object_path","filename","mime_type","size_bytes"]};
+const required:Record<ImportEntity,string[]>={employees:["employee_number","first_name","last_name"],opening_balances:["employee_number","type_code","date","direction","amount"],transactions:["employee_number","type_code","date","direction","amount"],loans:["employee_number","loan_type_code","account_number","start_date","principal"],loan_schedules:["loan_type_code","account_number","installment_number","due_date","total_due"],loan_payments:["loan_type_code","account_number","transaction_type_code","payment_date","amount"],rebates:["employee_number","rebate_type_code","rebate_date","amount"],leave_balances:["employee_number","leave_type_code","date","quantity_delta"],leave_history:["employee_number","leave_type_code","date","entry_kind","quantity_delta"],document_metadata:["employee_number","category_code","storage_object_path","filename","mime_type","size_bytes"]};
 const decimal=/^-?\d+(?:\.\d+)?$/;
 const isoDate=/^\d{4}-\d{2}-\d{2}$/;
 

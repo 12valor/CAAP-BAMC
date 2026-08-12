@@ -103,10 +103,9 @@ begin
       values (loan_id, (data->>'installment_number')::integer, (data->>'due_date')::date, coalesce((data->>'principal_due')::numeric,0), coalesce((data->>'interest_due')::numeric,0), coalesce((data->>'penalty_due')::numeric,0), coalesce((data->>'other_due')::numeric,0), (data->>'total_due')::numeric, coalesce(nullif(data->>'generation_method',''),'manual'), coalesce(nullif(data->>'status',''),'pending'), actor_id, actor_id)
       returning id into target_id;
     elsif row_record.entity_type = 'loan_payments' then
-      select l.id,l.employee_id into loan_id,employee_id from public.loans l join public.loan_types lt on lt.id=l.loan_type_id where l.account_number=data->>'account_number' and lower(lt.code)=lower(data->>'loan_type_code') and l.deleted_at is null;
-      insert into public.loan_payments (loan_id, employee_id, payment_date, amount, reference_number, status, notes, created_by, updated_by)
-      values (loan_id,employee_id,(data->>'payment_date')::date,(data->>'amount')::numeric,nullif(data->>'reference_number',''),'posted',nullif(data->>'notes',''),actor_id,actor_id)
-      returning id into target_id;
+      select l.id into loan_id from public.loans l join public.loan_types lt on lt.id=l.loan_type_id where l.account_number=data->>'account_number' and lower(lt.code)=lower(data->>'loan_type_code') and l.deleted_at is null;
+      select id into type_id from public.transaction_types where lower(code)=lower(data->>'transaction_type_code') and direction='credit' and deleted_at is null and is_active;
+      target_id := public.record_loan_payment(actor_id,loan_id,(data->>'payment_date')::date,(data->>'amount')::numeric,type_id,nullif(data->>'reference_number',''),nullif(data->>'notes',''));
     elsif row_record.entity_type = 'rebates' then
       select id into employee_id from public.employee_profiles where employee_number=data->>'employee_number' and deleted_at is null;
       select id into type_id from public.rebate_types where lower(code)=lower(data->>'rebate_type_code') and deleted_at is null and is_active;
