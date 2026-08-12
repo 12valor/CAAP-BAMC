@@ -101,6 +101,7 @@ export type Database = {
           old_data: Json | null
           reason: string | null
           request_id: string | null
+          subject_employee_id: string | null
         }
         Insert: {
           action: string
@@ -114,6 +115,7 @@ export type Database = {
           old_data?: Json | null
           reason?: string | null
           request_id?: string | null
+          subject_employee_id?: string | null
         }
         Update: {
           action?: string
@@ -127,6 +129,7 @@ export type Database = {
           old_data?: Json | null
           reason?: string | null
           request_id?: string | null
+          subject_employee_id?: string | null
         }
         Relationships: [
           {
@@ -134,6 +137,13 @@ export type Database = {
             columns: ["actor_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_subject_employee_id_fkey"
+            columns: ["subject_employee_id"]
+            isOneToOne: false
+            referencedRelation: "employee_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2435,6 +2445,10 @@ export type Database = {
         }
         Returns: string
       }
+      get_admin_dashboard_summary: {
+        Args: { end_date?: string; start_date?: string }
+        Returns: Json
+      }
       get_admin_employee_page: {
         Args: {
           actor_profile_id: string
@@ -2705,4 +2719,3 @@ export const Constants = {
     Enums: {},
   },
 } as const
-

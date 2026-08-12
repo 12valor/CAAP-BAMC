@@ -191,3 +191,11 @@ and repositories must not import fixture data.
   through `private.current_employee_id()` and never accept an employee ID.
   Generated PDFs are private/no-store and include the selected period, totals,
   schedules, rebates, attachment names, generation time, and page numbers.
+## Phase 11 reporting conventions
+
+- Dashboard and report queries run only after server-side administrator authorization. Browser pages receive bounded result pages, never complete financial tables.
+- Report lists use descending `(business_date, id)` or `(occurred_at, id)` keyset cursors. Exports repeat the same filtered query in batches and stop at 25,000 XLSX rows or 2,000 PDF rows.
+- The default reporting period is the current calendar month in `Asia/Manila`; staff can choose custom dates or explicitly select All time.
+- Scheduled outstanding is a provisional operational measure: configured total payable less posted loan payments, never below zero. Original principal is shown separately and is not described as remaining principal.
+- Audit records remain append-only. A trigger stores an indexed employee subject when it can be derived safely; the viewer exposes only allowlisted, recursively redacted before/after differences.
+- PDF and XLSX responses are generated on the server with `private, no-store` caching. No password, token, secret, storage path, signed URL, or raw spreadsheet row is included.

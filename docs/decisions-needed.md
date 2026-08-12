@@ -46,3 +46,15 @@ Phase 8-10 decisions still needed:
   transactions. Current running balances cover the selected posted rows.
 - Approve official statement wording, signatories, seal/logo use, paper size,
   certification text, and reconciliation rules before PDFs are official.
+
+Phase 11 reporting uses the following provisional presentation rules pending
+formal approval:
+
+- The dashboard opens to the current calendar month in `Asia/Manila` and offers
+  explicit custom-date and All-time filters.
+- `Scheduled outstanding` means configured total payable less posted payments,
+  clamped at zero. It is not an official payoff figure.
+- `Original principal` is shown separately because recorded payments are not yet
+  allocated into approved principal, interest, penalty, and other components.
+- Generated PDFs are operational copies only until wording, certification,
+  signatories, opening balances, precision, and reconciliation rules are approved.
