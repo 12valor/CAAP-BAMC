@@ -82,7 +82,7 @@ begin
         data->>'employee_number', data->>'first_name', nullif(data->>'middle_name',''), data->>'last_name',
         nullif(data->>'suffix',''), nullif(data->>'department',''), nullif(data->>'position_title',''),
         coalesce(nullif(data->>'employment_status',''),'active'), nullif(data->>'hire_date','')::date,
-        nullif(data->>'email',''), nullif(data->>'phone',''), nullif(data->>'employment_category',''),
+        nullif(data->>'email',''), nullif(data->>'phone',''), coalesce(nullif(data->>'employment_category',''),'Unspecified'),
         nullif(data->>'notes',''), actor_id, actor_id
       ) returning id into target_id;
     elsif row_record.entity_type in ('opening_balances','transactions') then
