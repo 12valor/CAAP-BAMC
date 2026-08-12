@@ -1,0 +1,11 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+set local search_path=extensions,public,storage,pg_catalog;
+select no_plan();
+select is((select public from storage.buckets where id='employee-documents'),false,'employee document bucket is private');
+select is((select file_size_limit from storage.buckets where id='employee-documents'),52428800::bigint,'bucket has a fixed hard size limit');
+select ok((select allowed_mime_types @> array['application/pdf','image/jpeg','image/png']::text[] from storage.buckets where id='employee-documents'),'bucket permits only supported document MIME types');
+select is((select count(*)::integer from pg_policies where schemaname='storage' and tablename='objects' and policyname like 'employee_documents_%'),3,'storage object access is governed by separate insert, select, and update policies');
+select ok(not exists(select 1 from pg_policies where schemaname='storage' and tablename='objects' and ('anon'=any(roles) or 'public'=any(roles)) and policyname like 'employee_documents_%'),'anonymous users have no employee-document Storage policy');
+select * from finish();
+rollback;

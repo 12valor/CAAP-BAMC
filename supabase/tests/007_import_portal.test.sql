@@ -1,0 +1,13 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+set local search_path=extensions,public,pg_catalog;
+select no_plan();
+select has_function('public','confirm_import_job',array['uuid'],'atomic import confirmation function exists');
+select has_function('public','get_my_financial_overview',array[]::text[],'employee overview function exists');
+select has_function('public','get_my_statement',array['date','date','uuid','uuid'],'employee statement function exists');
+select ok(not has_function_privilege('anon','public.get_my_statement(date,date,uuid,uuid)','execute'),'anonymous users cannot generate statements');
+select ok(has_function_privilege('authenticated','public.get_my_statement(date,date,uuid,uuid)','execute'),'authenticated employees can call the identity-derived statement function');
+select ok(not exists(select 1 from information_schema.parameters where specific_schema='public' and specific_name like 'get_my_statement_%' and parameter_name ilike '%employee%'),'statement function does not accept an employee identifier');
+select ok(exists(select 1 from pg_indexes where schemaname='public' and indexname='import_jobs_completed_digest_uidx' and indexdef ilike '%where%'),'repeated completed imports are protected by a partial digest index');
+select * from finish();
+rollback;

@@ -8,3 +8,8 @@ Each file starts a transaction and ends with `rollback`, so synthetic identities
 and records are never retained. Run the files in numeric order against an
 approved local, branch, or connected test database. Do not run them concurrently
 because they set transaction-local JWT claims and use fixed synthetic UUIDs.
+
+`006_storage_policies.test.sql` verifies the private bucket and Storage policy
+boundary separately from public-table RLS. `007_import_portal.test.sql` covers
+atomic import entry points, repeat-import protection, and employee
+identity-derived statement functions.

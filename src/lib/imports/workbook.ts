@@ -1,4 +1,3 @@
-import "server-only";
 import ExcelJS from "exceljs";
 import { createHash } from "node:crypto";
 
@@ -25,7 +24,7 @@ const isoDate=/^\d{4}-\d{2}-\d{2}$/;
 
 function cellText(cell:ExcelJS.Cell){const value=cell.value;if(value===null||value===undefined)return"";if(value instanceof Date)return value.toISOString().slice(0,10);if(typeof value==="object"&&"text" in value)return String(value.text).trim();return String(value).trim();}
 export async function parseImportWorkbook(buffer:ArrayBuffer){
-  const workbook=new ExcelJS.Workbook();await workbook.xlsx.load(Buffer.from(buffer));const rows:ParsedImportRow[]=[];let sequence=0;
+  const workbook=new ExcelJS.Workbook();await workbook.xlsx.load(Buffer.from(buffer) as never);const rows:ParsedImportRow[]=[];let sequence=0;
   for(const [sheetName,headers] of Object.entries(IMPORT_SHEETS) as [keyof typeof IMPORT_SHEETS,readonly string[]][]){const sheet=workbook.getWorksheet(sheetName);if(!sheet)continue;const actual=sheet.getRow(1).values as unknown[];const matches=headers.every((h,i)=>String(actual[i+1]??"").trim()===h);if(!matches)throw new Error(`${sheetName} does not match the standard template headers.`);for(let n=2;n<=sheet.rowCount;n++){const row=sheet.getRow(n);if(!row.hasValues)continue;sequence++;const entityType=entityBySheet[sheetName];const data:Record<string,string|boolean|Record<string,unknown>>={};const errors:string[]=[];const warnings:string[]=[];headers.forEach((header,index)=>{const cell=row.getCell(index+1);const text=cellText(cell);if(header==="metadata_json"&&text){try{const parsed=JSON.parse(text);if(!parsed||Array.isArray(parsed)||typeof parsed!=="object")throw new Error();data.metadata=parsed;}catch{errors.push("metadata_json must be a JSON object.");}}else if(header==="employee_visible")data[header]=["true","yes","1"].includes(text.toLowerCase());else data[header]=text;if(moneyFields.has(header)&&text){if(typeof cell.value==="number")warnings.push(`${header} was numeric; text-formatted money is recommended for exact import.`);if(!decimal.test(text))errors.push(`${header} must be an exact decimal value.`);}if(dateFields.has(header)&&text&&!isoDate.test(text))errors.push(`${header} must use YYYY-MM-DD.`);});for(const field of required[entityType])if(!String(data[field]??"").trim())errors.push(`${field} is required.`);if(["opening_balances","transactions"].includes(entityType)&&!["debit","credit"].includes(String(data.direction)))errors.push("direction must be debit or credit.");rows.push({rowNumber:sequence,entityType,data,errors,warnings});}}
   if(!rows.length)throw new Error("The workbook does not contain any import rows.");
   return{rows,digest:createHash("sha256").update(Buffer.from(buffer)).digest("hex")};

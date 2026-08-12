@@ -32,3 +32,17 @@ Phase 6 exposes `manual`, `zero_interest`, and `flat_percentage` as technical
 strategies only. No default CAAP rate is supplied. Penalties remain `none` or
 manually adjusted with an explanation. Semi-monthly previews currently use
 literal 15-day intervals until payroll cutoff and holiday rules are approved.
+
+Phase 8-10 decisions still needed:
+
+- Confirm the production document upload limit (25 MB application default,
+  50 MB bucket hard cap), retention for archived objects, and cleanup timing
+  for abandoned pending uploads.
+- Confirm employee-visible defaults for every document category.
+- Confirm the production opening-balance transaction type and direction rules,
+  whether imported usernames are reservations, and the approved workbook row
+  and processing limits.
+- Confirm whether filtered statements carry a beginning balance from earlier
+  transactions. Current running balances cover the selected posted rows.
+- Approve official statement wording, signatories, seal/logo use, paper size,
+  certification text, and reconciliation rules before PDFs are official.

@@ -81,3 +81,14 @@ test("one employee cannot read another employee record", async ({ page }) => {
   expect(statuses.own).toBe(200);
   expect(statuses.other).toBe(404);
 });
+
+test("employee portal data routes derive identity from the session", async ({ page }) => {
+  test.skip(!employeeCredentials.username || !employeeCredentials.password, "Provide isolated employee credentials to verify portal data isolation.");
+  await login(page, employeeCredentials.username!, employeeCredentials.password!);
+  await page.goto(`/portal/statement-of-account?employeeId=${employeeCredentials.otherEmployeeId ?? "00000000-0000-0000-0000-000000000000"}`);
+  await expect(page).toHaveURL(/\/portal\/statement-of-account/);
+  await expect(page.getByRole("heading", { name: "Statement of Account" })).toBeVisible();
+  const pdfResponse = await page.request.get(`/api/portal/statement.pdf?employeeId=${employeeCredentials.otherEmployeeId ?? "00000000-0000-0000-0000-000000000000"}`);
+  expect(pdfResponse.status()).toBe(200);
+  expect(pdfResponse.headers()["content-type"]).toContain("application/pdf");
+});
