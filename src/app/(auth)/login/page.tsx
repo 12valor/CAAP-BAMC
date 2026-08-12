@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { ShieldCheck } from "lucide-react";
 
@@ -24,21 +25,34 @@ export default async function LoginPage({
   const { reason } = await searchParams;
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-muted/35 px-4 py-10">
+    <main className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-slate-900 px-4 py-10">
+      <Image
+        src="/brand/bacolod-silay-airport-terminal.jpg"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="-z-20 object-cover object-[center_58%]"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-slate-950/45"
+      />
+
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <div className="mx-auto mb-4 flex h-20 w-28 items-center justify-center rounded-xl bg-white p-2 ring-1 ring-border">
+          <div className="mx-auto mb-4 flex h-20 w-28 items-center justify-center rounded-xl bg-white p-2 shadow-sm ring-1 ring-white/80">
             <CaapLogo priority className="max-h-16" sizes="112px" />
           </div>
-          <p className="text-sm font-bold tracking-[0.16em] text-primary">
+          <p className="text-sm font-bold tracking-[0.16em] text-white">
             CAAP BAMC
           </p>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-foreground">
+          <h1 className="mt-2 text-2xl font-bold tracking-tight text-white [text-shadow:0_1px_2px_rgb(15_23_42/0.65)]">
             Employee Financial Records
           </h1>
         </div>
 
-        <Card className="shadow-sm">
+        <Card className="border-white/70 bg-white shadow-xl shadow-slate-950/20">
           <CardHeader>
             <h2 className="font-heading text-base font-medium leading-snug">
               Sign in
@@ -52,7 +66,7 @@ export default async function LoginPage({
           </CardContent>
         </Card>
 
-        <p className="flex items-center justify-center gap-2 text-center text-xs text-muted-foreground">
+        <p className="flex items-center justify-center gap-2 text-center text-xs font-medium text-white [text-shadow:0_1px_2px_rgb(15_23_42/0.75)]">
           <ShieldCheck aria-hidden="true" className="size-4" />
           Authorized CAAP BAMC personnel only
         </p>
