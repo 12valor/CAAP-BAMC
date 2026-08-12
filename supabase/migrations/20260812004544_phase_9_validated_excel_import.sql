@@ -76,7 +76,7 @@ begin
     if row_record.entity_type = 'employees' then
       insert into public.employee_profiles (
         employee_number, first_name, middle_name, last_name, suffix, department,
-        position_title, employment_status, hire_date, email, phone, employment_category,
+        position_title, employment_status, hire_date, email_address, mobile_number, employment_category,
         notes, created_by, updated_by
       ) values (
         data->>'employee_number', data->>'first_name', nullif(data->>'middle_name',''), data->>'last_name',

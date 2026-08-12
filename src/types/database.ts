@@ -2405,6 +2405,10 @@ export type Database = {
         Returns: undefined
       }
       confirm_import_job: { Args: { target_job_id: string }; Returns: number }
+      confirm_import_job_as_admin: {
+        Args: { actor_profile_id: string; target_job_id: string }
+        Returns: number
+      }
       create_employee_account: {
         Args: {
           account_username: string
