@@ -1,18 +1,3 @@
-import type { Metadata } from "next";
-import { FileUp } from "lucide-react";
-
-import { SectionPlaceholder } from "@/components/preview/section-placeholder";
-
-export const metadata: Metadata = { title: "Imports" };
-
-export default function ImportsPage() {
-  return (
-    <SectionPlaceholder
-      eyebrow="Administrator workspace"
-      title="Imports"
-      description="Excel import review and validation placeholder."
-      actionLabel="Start import"
-      icon={FileUp}
-    />
-  );
-}
+import type{Metadata}from"next";import{requireRole}from"@/lib/permissions/authorization";import{createAdminClient}from"@/lib/supabase/admin";import{ImportManager}from"./import-manager";
+export const metadata:Metadata={title:"Excel Imports"};
+export default async function ImportsPage({searchParams}:{searchParams:Promise<Record<string,string|undefined>>}){await requireRole("admin");const p=await searchParams;const admin=createAdminClient();const{data:jobs}=await admin.from("import_jobs").select("id,source_filename,status,total_rows,valid_rows,error_rows,created_at,completed_at,summary").is("deleted_at",null).order("created_at",{ascending:false}).limit(30);const selected=p.job??jobs?.[0]?.id;const{data:rows}=selected?await admin.from("import_rows").select("id,row_number,entity_type,status,normalized_data,error_message,warning_message").eq("import_job_id",selected).order("row_number").limit(500):{data:[]};return <ImportManager jobs={jobs??[]} rows={rows??[]} selectedJobId={selected}/>}

@@ -1,0 +1,7 @@
+import "server-only";
+import { createClient } from "@/lib/supabase/server";
+
+export type StatementTransaction={id:string;date:string;reference_number:string|null;direction:"debit"|"credit";amount:string;description:string|null;transaction_type:string;category:string|null;running_balance:string};
+export type EmployeeStatement={employee:{id:string;employee_number:string;full_name:string};period:{start:string|null;end:string|null};generated_at:string;transactions:StatementTransaction[];totals:{debit:string;credit:string};loans:Array<{id:string;type:string;account_number:string|null;principal:string;total_payable:string;status:string;schedules:Array<{due_date:string;total_due:string;status:string}>}>;rebates:Array<{date:string;type:string;amount:string;status:string}>;attachments:Array<{id:string;filename:string;date:string|null;mime_type:string}>};
+export async function getMyStatement(filters:{start?:string;end?:string;type?:string;category?:string}={}){const supabase=await createClient();const{data,error}=await supabase.rpc("get_my_statement",{start_date:filters.start||undefined,end_date:filters.end||undefined,type_filter:filters.type||undefined,category_filter:filters.category||undefined});if(error)throw new Error("Statement data could not be loaded.");return data as unknown as EmployeeStatement|null;}
+export const money=(value:string|number)=>new Intl.NumberFormat("en-PH",{style:"currency",currency:"PHP"}).format(Number(value));
