@@ -55,16 +55,19 @@ export function LoginForm({ reason }: { reason?: string }) {
       ) : null}
 
       <div className="space-y-2">
-        <Label htmlFor="username">Username</Label>
+        <Label className="font-semibold" htmlFor="username">
+          Username
+        </Label>
         <div className="relative">
           <UserRound
             aria-hidden="true"
-            className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground"
+            className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-muted-foreground"
           />
           <Input
             id="username"
             autoComplete="username"
-            className="pl-10"
+            placeholder="Enter your username"
+            className="h-12 bg-white pl-11"
             aria-invalid={Boolean(form.formState.errors.username)}
             {...form.register("username")}
           />
@@ -77,17 +80,20 @@ export function LoginForm({ reason }: { reason?: string }) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label className="font-semibold" htmlFor="password">
+          Password
+        </Label>
         <div className="relative">
           <LockKeyhole
             aria-hidden="true"
-            className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground"
+            className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-muted-foreground"
           />
           <Input
             id="password"
             type="password"
             autoComplete="current-password"
-            className="pl-10"
+            placeholder="Enter your password"
+            className="h-12 bg-white pl-11"
             aria-invalid={Boolean(form.formState.errors.password)}
             {...form.register("password")}
           />
@@ -99,12 +105,12 @@ export function LoginForm({ reason }: { reason?: string }) {
         ) : null}
       </div>
 
-      <Button className="w-full" size="lg" type="submit" disabled={pending}>
+      <Button className="h-12 w-full" size="lg" type="submit" disabled={pending}>
         <LogIn aria-hidden="true" />
         {pending ? "Signing in…" : "Sign in"}
       </Button>
 
-      <p className="text-sm leading-6 text-muted-foreground">
+      <p className="border-t border-border pt-5 text-sm leading-6 text-muted-foreground">
         Accounts are issued by the CAAP BAMC bookkeeper. Contact the office if
         your account needs to be enabled or your password needs to be reset.
       </p>

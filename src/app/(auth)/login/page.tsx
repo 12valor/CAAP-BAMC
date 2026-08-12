@@ -5,7 +5,13 @@ import { ShieldCheck } from "lucide-react";
 
 import { LoginForm } from "@/app/(auth)/login/login-form";
 import { CaapLogo } from "@/components/branding/caap-logo";
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { getCurrentPrincipal, roleHome } from "@/lib/permissions/authorization";
 
 export const metadata: Metadata = {
@@ -39,7 +45,7 @@ export default async function LoginPage({
         className="absolute inset-0 -z-10 bg-slate-950/45"
       />
 
-      <div className="w-full max-w-md space-y-6">
+      <div className="w-full max-w-md space-y-5">
         <div className="text-center">
           <div className="mx-auto mb-4 flex h-20 w-28 items-center justify-center rounded-xl bg-white p-2 shadow-sm ring-1 ring-white/80">
             <CaapLogo priority className="max-h-16" sizes="112px" />
@@ -47,21 +53,16 @@ export default async function LoginPage({
           <p className="text-sm font-bold tracking-[0.16em] text-white">
             CAAP BAMC
           </p>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-white [text-shadow:0_1px_2px_rgb(15_23_42/0.65)]">
-            Employee Financial Records
-          </h1>
         </div>
 
-        <Card className="border-white/70 bg-white shadow-xl shadow-slate-950/20">
-          <CardHeader>
-            <h2 className="font-heading text-base font-medium leading-snug">
-              Sign in
-            </h2>
-            <CardDescription>
+        <Card className="gap-0 rounded-2xl border-0 bg-white py-0 shadow-2xl shadow-slate-950/30 ring-1 ring-white/80">
+          <CardHeader className="gap-2 border-b border-border/70 bg-muted/35 px-6 py-5">
+            <CardTitle className="text-xl font-semibold">Sign in</CardTitle>
+            <CardDescription className="leading-6">
               Enter the username and password issued by the bookkeeper.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-6">
             <LoginForm reason={reason} />
           </CardContent>
         </Card>
