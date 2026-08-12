@@ -10,6 +10,7 @@ select ok(not has_function_privilege('anon','public.get_my_statement(date,date,u
 select ok(has_function_privilege('authenticated','public.get_my_statement(date,date,uuid,uuid)','execute'),'authenticated employees can call the identity-derived statement function');
 select ok(not exists(select 1 from information_schema.parameters where specific_schema='public' and specific_name like 'get_my_statement_%' and parameter_name ilike '%employee%'),'statement function does not accept an employee identifier');
 select ok(exists(select 1 from pg_indexes where schemaname='public' and indexname='import_jobs_completed_digest_uidx' and indexdef ilike '%where%'),'repeated completed imports are protected by a partial digest index');
+select ok(pg_get_functiondef('public.confirm_import_job(uuid)'::regprocedure) like '%record_loan_payment%','loan payment imports reuse the atomic ledger-linked payment workflow');
 
 insert into auth.users(id,aud,role,email,email_confirmed_at,raw_app_meta_data,raw_user_meta_data,created_at,updated_at)
 values('87000000-0000-0000-0000-000000000001','authenticated','authenticated','import-admin@example.test',now(),'{}','{}',now(),now());

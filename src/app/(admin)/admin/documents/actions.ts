@@ -79,3 +79,9 @@ export async function archiveDocumentAction(data: FormData): Promise<AdminAction
   const {error}=await (await createClient()).rpc("manage_document",{operation:parsed.data.operation,target_id:parsed.data.documentId,change_reason:parsed.data.reason});
   if(error)return{error:databaseActionError(error,"Document archive status could not be changed.")}; revalidatePath("/admin/documents"); return{success:parsed.data.operation==="restore"?"Document restored.":"Document archived. The private object was retained."};
 }
+
+export async function updateDocumentLimitAction(data:FormData):Promise<AdminActionResult>{
+  const principal=await requireRole("admin");const megabytes=Number(data.get("megabytes"));if(!Number.isInteger(megabytes)||megabytes<1||megabytes>50)return{error:"Set a whole-number limit from 1 to 50 MB."};
+  const supabase=await createClient();const{error}=await supabase.from("system_settings").update({setting_value:{value:megabytes*1_048_576,maximum:52_428_800,resumable_threshold:6_291_456},updated_by:principal.id}).eq("setting_key","documents.max_file_size_bytes");
+  if(error)return{error:databaseActionError(error,"Document upload limit could not be updated.")};revalidatePath("/admin/documents");return{success:`Document upload limit set to ${megabytes} MB and audited.`};
+}
