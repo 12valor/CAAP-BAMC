@@ -25,7 +25,7 @@ insert into public.import_rows(import_job_id,row_number,entity_type,status,sourc
 set local role service_role;
 select set_config('request.jwt.claim.sub','87000000-0000-0000-0000-000000000001',true);
 select throws_ok($$select public.confirm_import_job('87000000-0000-0000-0000-000000000011')$$,'22023','Only a ready, error-free import can be confirmed.','invalid rows block confirmation');
-select throws_ok($$select public.confirm_import_job('87000000-0000-0000-0000-000000000012')$$,'23503','insert or update on table "transactions" violates foreign key constraint "transactions_transaction_type_id_fkey"','a failed linked record aborts confirmation');
+select throws_ok($$select public.confirm_import_job('87000000-0000-0000-0000-000000000012')$$,'23514','Transaction direction must match its configured type.','a failed linked record aborts confirmation');
 reset role;
 select is((select count(*)::integer from public.employee_profiles where employee_number='ROLLBACK-EMP'),0,'atomic confirmation rolls back earlier rows when a linked record fails');
 
