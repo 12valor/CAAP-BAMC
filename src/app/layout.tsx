@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   description:
     "Employee financial records management for CAAP BAMC Bacolod-Silay Airport.",
   applicationName: "CAAP BAMC Financial Records",
+  icons: {
+    icon: "/brand/caap-logo.png",
+    apple: "/brand/caap-logo.png",
+  },
 };
 
 export const viewport: Viewport = {

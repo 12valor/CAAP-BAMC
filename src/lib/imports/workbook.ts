@@ -1,5 +1,6 @@
 import ExcelJS from "exceljs";
 import { createHash } from "node:crypto";
+import { join } from "node:path";
 
 export const IMPORT_SHEETS = {
   Employees:["employee_number","username","first_name","middle_name","last_name","suffix","department","position_title","employment_category","employment_status","hire_date","email","phone","notes"],
@@ -31,7 +32,7 @@ export async function parseImportWorkbook(buffer:ArrayBuffer){
 }
 
 export async function createImportTemplate(){
-  const workbook=new ExcelJS.Workbook();workbook.creator="CAAP BAMC";const guide=workbook.addWorksheet("Instructions");guide.columns=[{width:24},{width:90}];guide.addRows([["CAAP BAMC Import Template","Enter data only in the named sheets. Delete sample rows before upload."],["Safe workflow","Upload creates a preview only. Nothing is imported until an administrator confirms an error-free job."],["Money","Use text-formatted exact decimal values without currency symbols."],["Dates","Use YYYY-MM-DD."],["Accounts","Usernames are checked for duplicates but Auth accounts and passwords are never created by workbook import."],["References","Unknown type/category codes must be mapped explicitly before confirmation."]]);guide.getRow(1).font={bold:true,size:14};
+  const workbook=new ExcelJS.Workbook();workbook.creator="CAAP BAMC";const guide=workbook.addWorksheet("Instructions");guide.columns=[{width:24},{width:90}];const logoId=workbook.addImage({filename:join(process.cwd(),"public","brand","caap-logo.png"),extension:"png"});guide.addImage(logoId,{tl:{col:2,row:0},ext:{width:120,height:88}});guide.addRows([["CAAP BAMC Import Template","Enter data only in the named sheets. Delete sample rows before upload."],["Safe workflow","Upload creates a preview only. Nothing is imported until an administrator confirms an error-free job."],["Money","Use text-formatted exact decimal values without currency symbols."],["Dates","Use YYYY-MM-DD."],["Accounts","Usernames are checked for duplicates but Auth accounts and passwords are never created by workbook import."],["References","Unknown type/category codes must be mapped explicitly before confirmation."]]);guide.getRow(1).font={bold:true,size:14};
   for(const [name,headers] of Object.entries(IMPORT_SHEETS)){const sheet=workbook.addWorksheet(name);sheet.addRow([...headers]);sheet.getRow(1).font={bold:true,color:{argb:"FFFFFFFF"}};sheet.getRow(1).fill={type:"pattern",pattern:"solid",fgColor:{argb:"FF155E9A"}};sheet.views=[{state:"frozen",ySplit:1}];sheet.autoFilter={from:"A1",to:`${String.fromCharCode(64+Math.min(headers.length,26))}1`};sheet.columns=headers.map(h=>({key:h,width:Math.max(16,Math.min(28,h.length+4)),style:{numFmt:"@"}}));}
   return workbook.xlsx.writeBuffer();
 }

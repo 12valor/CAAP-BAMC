@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { Landmark, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 import { LoginForm } from "@/app/(auth)/login/login-form";
+import { CaapLogo } from "@/components/branding/caap-logo";
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { getCurrentPrincipal, roleHome } from "@/lib/permissions/authorization";
 
@@ -26,8 +27,8 @@ export default async function LoginPage({
     <main className="flex min-h-screen items-center justify-center bg-muted/35 px-4 py-10">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <Landmark aria-hidden="true" className="size-7" />
+          <div className="mx-auto mb-4 flex h-20 w-28 items-center justify-center rounded-xl bg-white p-2 ring-1 ring-border">
+            <CaapLogo priority className="max-h-16" sizes="112px" />
           </div>
           <p className="text-sm font-bold tracking-[0.16em] text-primary">
             CAAP BAMC

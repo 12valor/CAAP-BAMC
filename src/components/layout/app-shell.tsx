@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Bell,
-  Landmark,
   LogOut,
   Menu,
   PanelLeftClose,
@@ -19,6 +18,7 @@ import {
   type NavigationRole,
 } from "@/config/navigation";
 import { logoutAction } from "@/app/auth-actions";
+import { CaapLogo } from "@/components/branding/caap-logo";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -146,8 +146,8 @@ function ProductIdentity({ collapsed = false }: { collapsed?: boolean }) {
         collapsed && "justify-center px-2",
       )}
     >
-      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-        <Landmark aria-hidden="true" className="size-5" />
+      <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-white p-1 ring-1 ring-border">
+        <CaapLogo priority className="max-h-9" sizes="44px" />
       </div>
       <div className={cn("min-w-0", collapsed && "sr-only")}>
         <p className="truncate text-sm font-bold tracking-wide text-sidebar-foreground">

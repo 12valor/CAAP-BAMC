@@ -12,6 +12,9 @@ export function FoundationPage({
   return (
     <main className="mx-auto flex min-h-screen max-w-4xl items-center px-6 py-16">
       <section aria-labelledby="page-title" className="space-y-4">
+        <div className="w-40 rounded-xl bg-white p-3 ring-1 ring-border">
+          <CaapLogo priority sizes="160px" />
+        </div>
         <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           {eyebrow}
         </p>
@@ -25,3 +28,4 @@ export function FoundationPage({
     </main>
   );
 }
+import { CaapLogo } from "@/components/branding/caap-logo";
