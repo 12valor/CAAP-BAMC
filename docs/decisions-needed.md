@@ -27,3 +27,8 @@ Cross-cutting decisions still needed:
 
 Until these decisions are approved, later phases must store explicitly entered
 values and configuration without embedding provisional formulas.
+
+Phase 6 exposes `manual`, `zero_interest`, and `flat_percentage` as technical
+strategies only. No default CAAP rate is supplied. Penalties remain `none` or
+manually adjusted with an explanation. Semi-monthly previews currently use
+literal 15-day intervals until payroll cutoff and holiday rules are approved.

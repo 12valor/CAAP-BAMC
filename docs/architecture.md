@@ -155,3 +155,20 @@ and repositories must not import fixture data.
 - Supabase database tests (pgTAP or equivalent) accompany every RLS policy.
 - Required delivery checks are lint, type checking, unit/component tests, and a
   production build. Schema phases also run database and RLS tests.
+
+## Phase 4-6 workflow boundaries
+
+- Employee and ledger lists use server-side search, filters, and keyset cursors.
+  Employee detail pages expose overview, transaction, loan, rebate, leave,
+  document, and activity tabs without exposing password values.
+- Trusted employee, transaction, loan, payment, schedule, adjustment, and rebate
+  mutations are service-only RPCs. Each Server Action repeats the administrator
+  check before using the secret-key client.
+- Ledger amounts are positive. Direction comes from the configured transaction
+  type and controls the balance effect. Soft-delete and restore require reasons.
+- Loan creation saves its schedule atomically. Payment posting creates one
+  ledger transaction and its allocation rows atomically. Schedule replacement
+  soft-deletes superseded rows, and adjustments require explanations.
+- Loan and rebate previews use integer decimal arithmetic and constrained
+  strategies. Manual remains the default; no provisional CAAP formula or
+  executable user expression is embedded.

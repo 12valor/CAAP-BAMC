@@ -291,3 +291,5 @@ grant execute on function public.manage_employee_record(uuid, text, uuid, jsonb,
 grant execute on function public.get_admin_employee_page(uuid, text, text, text, text, boolean, text, uuid, integer) to service_role;
 
 notify pgrst, 'reload schema';
+
+

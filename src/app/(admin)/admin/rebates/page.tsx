@@ -1,18 +1,1 @@
-import type { Metadata } from "next";
-import { BadgePercent } from "lucide-react";
-
-import { SectionPlaceholder } from "@/components/preview/section-placeholder";
-
-export const metadata: Metadata = { title: "Rebates" };
-
-export default function RebatesPage() {
-  return (
-    <SectionPlaceholder
-      eyebrow="Administrator workspace"
-      title="Rebates"
-      description="Rebate recording and review placeholder."
-      actionLabel="Add rebate"
-      icon={BadgePercent}
-    />
-  );
-}
+import type{Metadata}from"next";import{PageHeader}from"@/components/layout/page-header";import{requireRole}from"@/lib/permissions/authorization";import{createAdminClient}from"@/lib/supabase/admin";import{RebateManager}from"./rebate-manager";export const metadata:Metadata={title:"Rebates"};export default async function RebatesPage(){await requireRole("admin");const admin=createAdminClient();const[rebates,employees,types,loans]=await Promise.all([admin.from("rebates").select("id,employee_id,rebate_type_id,loan_id,transaction_id,rebate_date,amount,status,reason,calculation_source,calculated_amount,override_reason,employee_profiles(employee_number,first_name,last_name),rebate_types(code,name)").is("deleted_at",null).order("rebate_date",{ascending:false}).limit(200),admin.from("employee_profiles").select("id,employee_number,first_name,last_name").is("deleted_at",null).order("last_name"),admin.from("rebate_types").select("id,code,name,calculation_strategy,fixed_amount,percentage_rate,balance_effect,rounding_method").eq("is_active",true).is("deleted_at",null),admin.from("loans").select("id,employee_id,account_number,principal_amount,status").is("deleted_at",null).neq("status","cancelled")]);if([rebates,employees,types,loans].some(r=>r.error))throw new Error("Unable to load rebate records.");return <div className="space-y-6"><PageHeader eyebrow="Administrator workspace" preview={false} title="Rebate management" description="Record manual or structured calculated rebates and preserve override history."/><RebateManager rebates={rebates.data??[]} employees={employees.data??[]} types={types.data??[]} loans={loans.data??[]}/></div>}

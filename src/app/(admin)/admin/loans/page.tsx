@@ -1,18 +1,2 @@
-import type { Metadata } from "next";
-import { Landmark } from "lucide-react";
-
-import { SectionPlaceholder } from "@/components/preview/section-placeholder";
-
-export const metadata: Metadata = { title: "Loans" };
-
-export default function LoansPage() {
-  return (
-    <SectionPlaceholder
-      eyebrow="Administrator workspace"
-      title="Loans"
-      description="Configurable loan records and schedules placeholder."
-      actionLabel="Add loan"
-      icon={Landmark}
-    />
-  );
-}
+import type{Metadata}from"next";import{PageHeader}from"@/components/layout/page-header";import{requireRole}from"@/lib/permissions/authorization";import{createAdminClient}from"@/lib/supabase/admin";import{LoanManager}from"./loan-manager";export const metadata:Metadata={title:"Loans"};
+export default async function LoansPage(){await requireRole("admin");const admin=createAdminClient();const[loans,employees,loanTypes,creditTypes,schedules]=await Promise.all([admin.from("loans").select("id,employee_id,loan_type_id,account_number,start_date,maturity_date,principal_amount,total_payable_amount,interest_rate,term_count,installment_frequency,rounding_method,calculation_source,status,employee_profiles(employee_number,first_name,last_name),loan_types(code,name)").is("deleted_at",null).order("start_date",{ascending:false}).limit(100),admin.from("employee_profiles").select("id,employee_number,first_name,last_name").is("deleted_at",null).order("last_name"),admin.from("loan_types").select("id,code,name,calculation_strategy,default_rate,default_term_count,installment_frequency,rounding_method").eq("is_active",true).is("deleted_at",null).order("name"),admin.from("transaction_types").select("id,name").eq("direction","credit").eq("is_active",true).is("deleted_at",null),admin.from("loan_schedules").select("id,loan_id,installment_number,due_date,principal_due,interest_due,penalty_due,other_due,total_due,paid_amount,status").is("deleted_at",null).order("installment_number")]);if([loans,employees,loanTypes,creditTypes,schedules].some(x=>x.error))throw new Error("Unable to load loan records.");return <div className="space-y-6"><PageHeader eyebrow="Administrator workspace" preview={false} title="Loans, schedules, and payments" description="Create configurable loans, preview schedules, record ledger-linked payments, and document adjustments."/><LoanManager loans={loans.data??[]} employees={employees.data??[]} loanTypes={loanTypes.data??[]} creditTypes={creditTypes.data??[]} schedules={schedules.data??[]}/></div>}

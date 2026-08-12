@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 
 import { generateIssuedPassword } from "@/lib/auth/security";
 import type { AccountActionResult } from "@/lib/auth/types";
+import { databaseActionError, type AdminActionResult } from "@/lib/admin-action";
 import { requireRole } from "@/lib/permissions/authorization";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
@@ -15,8 +16,68 @@ import {
   type CreateEmployeeAccountInput,
   type ResetPasswordInput,
 } from "@/validation/auth";
+import { employeeArchiveSchema, employeeRecordSchema } from "@/validation/employee";
 
 const INTERNAL_AUTH_DOMAIN = "accounts.caap-bamc.invalid";
+
+function formString(formData: FormData, name: string) {
+  return String(formData.get(name) ?? "");
+}
+
+export async function saveEmployeeAction(formData: FormData): Promise<AdminActionResult> {
+  const principal = await requireRole("admin");
+  const parsed = employeeRecordSchema.safeParse({
+    employeeId: formString(formData, "employeeId") || undefined,
+    employeeNumber: formString(formData, "employeeNumber"),
+    firstName: formString(formData, "firstName"), middleName: formString(formData, "middleName"),
+    lastName: formString(formData, "lastName"), suffix: formString(formData, "suffix"),
+    department: formString(formData, "department"), positionTitle: formString(formData, "positionTitle"),
+    employmentCategory: formString(formData, "employmentCategory"),
+    employmentStatus: formString(formData, "employmentStatus"),
+    emailAddress: formString(formData, "emailAddress"), mobileNumber: formString(formData, "mobileNumber"),
+    addressText: formString(formData, "addressText"), notes: formString(formData, "notes"),
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid employee details." };
+  const { employeeId, ...data } = parsed.data;
+  const payload = {
+    employee_number: data.employeeNumber, first_name: data.firstName, middle_name: data.middleName,
+    last_name: data.lastName, suffix: data.suffix, department: data.department,
+    position_title: data.positionTitle, employment_category: data.employmentCategory,
+    employment_status: data.employmentStatus, email_address: data.emailAddress,
+    mobile_number: data.mobileNumber, address_text: data.addressText, notes: data.notes,
+  };
+  const admin = createAdminClient();
+  const { data: id, error } = await admin.rpc("manage_employee_record", {
+    actor_profile_id: principal.id, operation: employeeId ? "update" : "create",
+    employee_record_id: employeeId, payload,
+  });
+  if (error) return { error: databaseActionError(error, "The employee record could not be saved.") };
+  revalidatePath("/admin/employees");
+  if (employeeId) revalidatePath(`/admin/employees/${employeeId}`);
+  return { success: employeeId ? "Employee record updated." : "Employee record created.", id: id ?? undefined };
+}
+
+export async function archiveEmployeeAction(formData: FormData): Promise<AdminActionResult> {
+  const principal = await requireRole("admin");
+  const parsed = employeeArchiveSchema.safeParse({
+    employeeId: formString(formData, "employeeId"), operation: formString(formData, "operation"),
+    reason: formString(formData, "reason"),
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid archive request." };
+  const admin = createAdminClient();
+  const { data: employee } = await admin.from("employee_profiles").select("profile_id").eq("id", parsed.data.employeeId).maybeSingle();
+  if (parsed.data.operation === "archive" && employee?.profile_id) {
+    const { error: authError } = await admin.auth.admin.updateUserById(employee.profile_id, { ban_duration: "876000h" });
+    if (authError) return { error: "The linked account could not be disabled, so the employee was not archived." };
+  }
+  const { error } = await admin.rpc("manage_employee_record", {
+    actor_profile_id: principal.id, operation: parsed.data.operation,
+    employee_record_id: parsed.data.employeeId, change_reason: parsed.data.reason, payload: {},
+  });
+  if (error) return { error: databaseActionError(error, "The archive status could not be changed.") };
+  revalidatePath("/admin/employees"); revalidatePath(`/admin/employees/${parsed.data.employeeId}`);
+  return { success: parsed.data.operation === "archive" ? "Employee archived and linked access disabled." : "Employee restored." };
+}
 
 export async function createEmployeeAccountAction(
   input: CreateEmployeeAccountInput,

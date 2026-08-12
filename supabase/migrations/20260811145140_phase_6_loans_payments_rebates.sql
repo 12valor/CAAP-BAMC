@@ -548,3 +548,5 @@ update public.loan_types set
 where code in ('GL', 'MPL', 'EL') and deleted_at is null;
 
 notify pgrst, 'reload schema';
+
+

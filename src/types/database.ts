@@ -1,4 +1,3 @@
-// Generated from the applied Supabase public schema. Do not edit by hand.
 export type Json =
   | string
   | number
@@ -242,6 +241,9 @@ export type Database = {
           storage_object_path: string
           updated_at: string
           updated_by: string | null
+          upload_attempts: number
+          upload_error: string | null
+          uploaded_at: string | null
         }
         Insert: {
           created_at?: string
@@ -262,6 +264,9 @@ export type Database = {
           storage_object_path: string
           updated_at?: string
           updated_by?: string | null
+          upload_attempts?: number
+          upload_error?: string | null
+          uploaded_at?: string | null
         }
         Update: {
           created_at?: string
@@ -282,6 +287,9 @@ export type Database = {
           storage_object_path?: string
           updated_at?: string
           updated_by?: string | null
+          upload_attempts?: number
+          upload_error?: string | null
+          uploaded_at?: string | null
         }
         Relationships: [
           {
@@ -323,63 +331,81 @@ export type Database = {
       }
       employee_profiles: {
         Row: {
+          address_text: string | null
           created_at: string
           created_by: string | null
           deleted_at: string | null
           deleted_by: string | null
           deletion_reason: string | null
           department: string | null
+          email_address: string | null
           employee_number: string
+          employment_category: string
           employment_status: string
           first_name: string
           hire_date: string | null
           id: string
           last_name: string
           middle_name: string | null
+          mobile_number: string | null
+          notes: string | null
           position_title: string | null
           profile_id: string | null
+          search_text: string | null
           separation_date: string | null
           suffix: string | null
           updated_at: string
           updated_by: string | null
         }
         Insert: {
+          address_text?: string | null
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
           deleted_by?: string | null
           deletion_reason?: string | null
           department?: string | null
+          email_address?: string | null
           employee_number: string
+          employment_category?: string
           employment_status?: string
           first_name: string
           hire_date?: string | null
           id?: string
           last_name: string
           middle_name?: string | null
+          mobile_number?: string | null
+          notes?: string | null
           position_title?: string | null
           profile_id?: string | null
+          search_text?: string | null
           separation_date?: string | null
           suffix?: string | null
           updated_at?: string
           updated_by?: string | null
         }
         Update: {
+          address_text?: string | null
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
           deleted_by?: string | null
           deletion_reason?: string | null
           department?: string | null
+          email_address?: string | null
           employee_number?: string
+          employment_category?: string
           employment_status?: string
           first_name?: string
           hire_date?: string | null
           id?: string
           last_name?: string
           middle_name?: string | null
+          mobile_number?: string | null
+          notes?: string | null
           position_title?: string | null
           profile_id?: string | null
+          search_text?: string | null
           separation_date?: string | null
           suffix?: string | null
           updated_at?: string
@@ -418,6 +444,7 @@ export type Database = {
       }
       financial_categories: {
         Row: {
+          balance_effect: string
           code: string
           created_at: string
           created_by: string | null
@@ -425,6 +452,8 @@ export type Database = {
           deleted_by: string | null
           deletion_reason: string | null
           description: string | null
+          effective_from: string | null
+          effective_to: string | null
           id: string
           is_active: boolean
           name: string
@@ -433,6 +462,7 @@ export type Database = {
           updated_by: string | null
         }
         Insert: {
+          balance_effect?: string
           code: string
           created_at?: string
           created_by?: string | null
@@ -440,6 +470,8 @@ export type Database = {
           deleted_by?: string | null
           deletion_reason?: string | null
           description?: string | null
+          effective_from?: string | null
+          effective_to?: string | null
           id?: string
           is_active?: boolean
           name: string
@@ -448,6 +480,7 @@ export type Database = {
           updated_by?: string | null
         }
         Update: {
+          balance_effect?: string
           code?: string
           created_at?: string
           created_by?: string | null
@@ -455,6 +488,8 @@ export type Database = {
           deleted_by?: string | null
           deletion_reason?: string | null
           description?: string | null
+          effective_from?: string | null
+          effective_to?: string | null
           id?: string
           is_active?: boolean
           name?: string
@@ -489,6 +524,8 @@ export type Database = {
       import_jobs: {
         Row: {
           completed_at: string | null
+          confirmed_at: string | null
+          confirmed_by: string | null
           created_at: string
           created_by: string | null
           deleted_at: string | null
@@ -497,6 +534,7 @@ export type Database = {
           error_rows: number
           id: string
           import_type: string
+          source_digest: string | null
           source_filename: string
           started_at: string | null
           status: string
@@ -509,6 +547,8 @@ export type Database = {
         }
         Insert: {
           completed_at?: string | null
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
@@ -517,6 +557,7 @@ export type Database = {
           error_rows?: number
           id?: string
           import_type: string
+          source_digest?: string | null
           source_filename: string
           started_at?: string | null
           status?: string
@@ -529,6 +570,8 @@ export type Database = {
         }
         Update: {
           completed_at?: string | null
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
@@ -537,6 +580,7 @@ export type Database = {
           error_rows?: number
           id?: string
           import_type?: string
+          source_digest?: string | null
           source_filename?: string
           started_at?: string | null
           status?: string
@@ -548,6 +592,13 @@ export type Database = {
           valid_rows?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "import_jobs_confirmed_by_fkey"
+            columns: ["confirmed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "import_jobs_created_by_fkey"
             columns: ["created_by"]
@@ -578,6 +629,7 @@ export type Database = {
           deleted_at: string | null
           deleted_by: string | null
           deletion_reason: string | null
+          entity_type: string | null
           error_code: string | null
           error_details: Json | null
           error_message: string | null
@@ -592,6 +644,7 @@ export type Database = {
           target_table: string | null
           updated_at: string
           updated_by: string | null
+          warning_message: string | null
         }
         Insert: {
           created_at?: string
@@ -599,6 +652,7 @@ export type Database = {
           deleted_at?: string | null
           deleted_by?: string | null
           deletion_reason?: string | null
+          entity_type?: string | null
           error_code?: string | null
           error_details?: Json | null
           error_message?: string | null
@@ -613,6 +667,7 @@ export type Database = {
           target_table?: string | null
           updated_at?: string
           updated_by?: string | null
+          warning_message?: string | null
         }
         Update: {
           created_at?: string
@@ -620,6 +675,7 @@ export type Database = {
           deleted_at?: string | null
           deleted_by?: string | null
           deletion_reason?: string | null
+          entity_type?: string | null
           error_code?: string | null
           error_details?: Json | null
           error_message?: string | null
@@ -634,6 +690,7 @@ export type Database = {
           target_table?: string | null
           updated_at?: string
           updated_by?: string | null
+          warning_message?: string | null
         }
         Relationships: [
           {
@@ -659,6 +716,85 @@ export type Database = {
           },
           {
             foreignKeyName: "import_rows_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      interest_methods: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          default_rate: number | null
+          deleted_at: string | null
+          deleted_by: string | null
+          deletion_reason: string | null
+          description: string | null
+          effective_from: string | null
+          effective_to: string | null
+          id: string
+          is_active: boolean
+          name: string
+          strategy: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          default_rate?: number | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          deletion_reason?: string | null
+          description?: string | null
+          effective_from?: string | null
+          effective_to?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          strategy?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          default_rate?: number | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          deletion_reason?: string | null
+          description?: string | null
+          effective_from?: string | null
+          effective_to?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          strategy?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interest_methods_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "interest_methods_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "interest_methods_updated_by_fkey"
             columns: ["updated_by"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -925,6 +1061,90 @@ export type Database = {
           },
         ]
       }
+      loan_adjustments: {
+        Row: {
+          adjustment_field: string
+          amount_delta: number
+          created_at: string
+          created_by: string | null
+          deleted_at: string | null
+          deleted_by: string | null
+          deletion_reason: string | null
+          explanation: string
+          id: string
+          loan_id: string
+          loan_schedule_id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          adjustment_field: string
+          amount_delta: number
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          deletion_reason?: string | null
+          explanation: string
+          id?: string
+          loan_id: string
+          loan_schedule_id: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          adjustment_field?: string
+          amount_delta?: number
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          deletion_reason?: string | null
+          explanation?: string
+          id?: string
+          loan_id?: string
+          loan_schedule_id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loan_adjustments_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_adjustments_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_adjustments_loan_id_fkey"
+            columns: ["loan_id"]
+            isOneToOne: false
+            referencedRelation: "loans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_adjustments_loan_schedule_id_fkey"
+            columns: ["loan_schedule_id"]
+            isOneToOne: false
+            referencedRelation: "loan_schedules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_adjustments_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       loan_payment_allocations: {
         Row: {
           allocated_amount: number
@@ -1117,6 +1337,7 @@ export type Database = {
           interest_due: number
           loan_id: string
           other_due: number
+          paid_amount: number
           penalty_due: number
           principal_due: number
           rule_snapshot: Json
@@ -1138,6 +1359,7 @@ export type Database = {
           interest_due?: number
           loan_id: string
           other_due?: number
+          paid_amount?: number
           penalty_due?: number
           principal_due?: number
           rule_snapshot?: Json
@@ -1159,6 +1381,7 @@ export type Database = {
           interest_due?: number
           loan_id?: string
           other_due?: number
+          paid_amount?: number
           penalty_due?: number
           principal_due?: number
           rule_snapshot?: Json
@@ -1206,13 +1429,21 @@ export type Database = {
           configuration_version: number
           created_at: string
           created_by: string | null
+          default_rate: number | null
+          default_term_count: number | null
           deleted_at: string | null
           deleted_by: string | null
           deletion_reason: string | null
           description: string | null
+          effective_from: string | null
+          effective_to: string | null
           id: string
+          installment_frequency: string
+          interest_method_id: string | null
           is_active: boolean
           name: string
+          penalty_rule_id: string | null
+          rounding_method: string
           sort_order: number
           updated_at: string
           updated_by: string | null
@@ -1224,13 +1455,21 @@ export type Database = {
           configuration_version?: number
           created_at?: string
           created_by?: string | null
+          default_rate?: number | null
+          default_term_count?: number | null
           deleted_at?: string | null
           deleted_by?: string | null
           deletion_reason?: string | null
           description?: string | null
+          effective_from?: string | null
+          effective_to?: string | null
           id?: string
+          installment_frequency?: string
+          interest_method_id?: string | null
           is_active?: boolean
           name: string
+          penalty_rule_id?: string | null
+          rounding_method?: string
           sort_order?: number
           updated_at?: string
           updated_by?: string | null
@@ -1242,13 +1481,21 @@ export type Database = {
           configuration_version?: number
           created_at?: string
           created_by?: string | null
+          default_rate?: number | null
+          default_term_count?: number | null
           deleted_at?: string | null
           deleted_by?: string | null
           deletion_reason?: string | null
           description?: string | null
+          effective_from?: string | null
+          effective_to?: string | null
           id?: string
+          installment_frequency?: string
+          interest_method_id?: string | null
           is_active?: boolean
           name?: string
+          penalty_rule_id?: string | null
+          rounding_method?: string
           sort_order?: number
           updated_at?: string
           updated_by?: string | null
@@ -1269,6 +1516,20 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "loan_types_interest_method_id_fkey"
+            columns: ["interest_method_id"]
+            isOneToOne: false
+            referencedRelation: "interest_methods"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loan_types_penalty_rule_id_fkey"
+            columns: ["penalty_rule_id"]
+            isOneToOne: false
+            referencedRelation: "penalty_rules"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "loan_types_updated_by_fkey"
             columns: ["updated_by"]
             isOneToOne: false
@@ -1281,6 +1542,8 @@ export type Database = {
         Row: {
           account_number: string | null
           application_date: string | null
+          calculation_preview: Json
+          calculation_source: string
           created_at: string
           created_by: string | null
           deleted_at: string | null
@@ -1288,11 +1551,15 @@ export type Database = {
           deletion_reason: string | null
           employee_id: string
           id: string
+          installment_frequency: string
+          interest_method_id: string | null
           interest_rate: number | null
           loan_type_id: string
           maturity_date: string | null
           notes: string | null
+          penalty_rule_id: string | null
           principal_amount: number
+          rounding_method: string
           rule_snapshot: Json
           schedule_method: string
           start_date: string
@@ -1305,6 +1572,8 @@ export type Database = {
         Insert: {
           account_number?: string | null
           application_date?: string | null
+          calculation_preview?: Json
+          calculation_source?: string
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
@@ -1312,11 +1581,15 @@ export type Database = {
           deletion_reason?: string | null
           employee_id: string
           id?: string
+          installment_frequency?: string
+          interest_method_id?: string | null
           interest_rate?: number | null
           loan_type_id: string
           maturity_date?: string | null
           notes?: string | null
+          penalty_rule_id?: string | null
           principal_amount: number
+          rounding_method?: string
           rule_snapshot?: Json
           schedule_method?: string
           start_date: string
@@ -1329,6 +1602,8 @@ export type Database = {
         Update: {
           account_number?: string | null
           application_date?: string | null
+          calculation_preview?: Json
+          calculation_source?: string
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
@@ -1336,11 +1611,15 @@ export type Database = {
           deletion_reason?: string | null
           employee_id?: string
           id?: string
+          installment_frequency?: string
+          interest_method_id?: string | null
           interest_rate?: number | null
           loan_type_id?: string
           maturity_date?: string | null
           notes?: string | null
+          penalty_rule_id?: string | null
           principal_amount?: number
+          rounding_method?: string
           rule_snapshot?: Json
           schedule_method?: string
           start_date?: string
@@ -1373,10 +1652,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "loans_interest_method_id_fkey"
+            columns: ["interest_method_id"]
+            isOneToOne: false
+            referencedRelation: "interest_methods"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "loans_loan_type_id_fkey"
             columns: ["loan_type_id"]
             isOneToOne: false
             referencedRelation: "loan_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loans_penalty_rule_id_fkey"
+            columns: ["penalty_rule_id"]
+            isOneToOne: false
+            referencedRelation: "penalty_rules"
             referencedColumns: ["id"]
           },
           {
@@ -1426,6 +1719,94 @@ export type Database = {
           {
             foreignKeyName: "login_activity_profile_id_fkey"
             columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      penalty_rules: {
+        Row: {
+          cap_amount: number | null
+          code: string
+          created_at: string
+          created_by: string | null
+          deleted_at: string | null
+          deleted_by: string | null
+          deletion_reason: string | null
+          description: string | null
+          effective_from: string | null
+          effective_to: string | null
+          fixed_amount: number | null
+          grace_days: number
+          id: string
+          is_active: boolean
+          name: string
+          percentage_rate: number | null
+          strategy: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          cap_amount?: number | null
+          code: string
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          deletion_reason?: string | null
+          description?: string | null
+          effective_from?: string | null
+          effective_to?: string | null
+          fixed_amount?: number | null
+          grace_days?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          percentage_rate?: number | null
+          strategy?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          cap_amount?: number | null
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          deletion_reason?: string | null
+          description?: string | null
+          effective_from?: string | null
+          effective_to?: string | null
+          fixed_amount?: number | null
+          grace_days?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          percentage_rate?: number | null
+          strategy?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "penalty_rules_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "penalty_rules_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "penalty_rules_updated_by_fkey"
+            columns: ["updated_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -1498,6 +1879,7 @@ export type Database = {
       }
       rebate_types: {
         Row: {
+          balance_effect: string
           calculation_parameters: Json
           calculation_strategy: string
           code: string
@@ -1508,14 +1890,21 @@ export type Database = {
           deleted_by: string | null
           deletion_reason: string | null
           description: string | null
+          effective_from: string | null
+          effective_to: string | null
+          fixed_amount: number | null
           id: string
           is_active: boolean
           name: string
+          percentage_rate: number | null
+          rounding_method: string
           sort_order: number
+          transaction_type_id: string | null
           updated_at: string
           updated_by: string | null
         }
         Insert: {
+          balance_effect?: string
           calculation_parameters?: Json
           calculation_strategy?: string
           code: string
@@ -1526,14 +1915,21 @@ export type Database = {
           deleted_by?: string | null
           deletion_reason?: string | null
           description?: string | null
+          effective_from?: string | null
+          effective_to?: string | null
+          fixed_amount?: number | null
           id?: string
           is_active?: boolean
           name: string
+          percentage_rate?: number | null
+          rounding_method?: string
           sort_order?: number
+          transaction_type_id?: string | null
           updated_at?: string
           updated_by?: string | null
         }
         Update: {
+          balance_effect?: string
           calculation_parameters?: Json
           calculation_strategy?: string
           code?: string
@@ -1544,10 +1940,16 @@ export type Database = {
           deleted_by?: string | null
           deletion_reason?: string | null
           description?: string | null
+          effective_from?: string | null
+          effective_to?: string | null
+          fixed_amount?: number | null
           id?: string
           is_active?: boolean
           name?: string
+          percentage_rate?: number | null
+          rounding_method?: string
           sort_order?: number
+          transaction_type_id?: string | null
           updated_at?: string
           updated_by?: string | null
         }
@@ -1567,6 +1969,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "rebate_types_transaction_type_id_fkey"
+            columns: ["transaction_type_id"]
+            isOneToOne: false
+            referencedRelation: "transaction_types"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "rebate_types_updated_by_fkey"
             columns: ["updated_by"]
             isOneToOne: false
@@ -1578,6 +1987,8 @@ export type Database = {
       rebates: {
         Row: {
           amount: number
+          calculated_amount: number | null
+          calculation_source: string
           created_at: string
           created_by: string | null
           deleted_at: string | null
@@ -1586,6 +1997,7 @@ export type Database = {
           employee_id: string
           id: string
           loan_id: string | null
+          override_reason: string | null
           reason: string | null
           rebate_date: string
           rebate_type_id: string
@@ -1597,6 +2009,8 @@ export type Database = {
         }
         Insert: {
           amount: number
+          calculated_amount?: number | null
+          calculation_source?: string
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
@@ -1605,6 +2019,7 @@ export type Database = {
           employee_id: string
           id?: string
           loan_id?: string | null
+          override_reason?: string | null
           reason?: string | null
           rebate_date: string
           rebate_type_id: string
@@ -1616,6 +2031,8 @@ export type Database = {
         }
         Update: {
           amount?: number
+          calculated_amount?: number | null
+          calculation_source?: string
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
@@ -1624,6 +2041,7 @@ export type Database = {
           employee_id?: string
           id?: string
           loan_id?: string | null
+          override_reason?: string | null
           reason?: string | null
           rebate_date?: string
           rebate_type_id?: string
@@ -1754,6 +2172,7 @@ export type Database = {
       }
       transaction_types: {
         Row: {
+          balance_effect: string
           code: string
           created_at: string
           created_by: string | null
@@ -1762,15 +2181,22 @@ export type Database = {
           deletion_reason: string | null
           description: string | null
           direction: string
+          effective_from: string | null
+          effective_to: string | null
           financial_category_id: string
           id: string
           is_active: boolean
           name: string
+          reference_padding: number
+          reference_prefix: string | null
+          reference_reset: string
+          reference_strategy: string
           sort_order: number
           updated_at: string
           updated_by: string | null
         }
         Insert: {
+          balance_effect?: string
           code: string
           created_at?: string
           created_by?: string | null
@@ -1779,15 +2205,22 @@ export type Database = {
           deletion_reason?: string | null
           description?: string | null
           direction: string
+          effective_from?: string | null
+          effective_to?: string | null
           financial_category_id: string
           id?: string
           is_active?: boolean
           name: string
+          reference_padding?: number
+          reference_prefix?: string | null
+          reference_reset?: string
+          reference_strategy?: string
           sort_order?: number
           updated_at?: string
           updated_by?: string | null
         }
         Update: {
+          balance_effect?: string
           code?: string
           created_at?: string
           created_by?: string | null
@@ -1796,10 +2229,16 @@ export type Database = {
           deletion_reason?: string | null
           description?: string | null
           direction?: string
+          effective_from?: string | null
+          effective_to?: string | null
           financial_category_id?: string
           id?: string
           is_active?: boolean
           name?: string
+          reference_padding?: number
+          reference_prefix?: string | null
+          reference_reset?: string
+          reference_strategy?: string
           sort_order?: number
           updated_at?: string
           updated_by?: string | null
@@ -1838,6 +2277,7 @@ export type Database = {
       transactions: {
         Row: {
           amount: number
+          attachment_document_id: string | null
           created_at: string
           created_by: string | null
           deleted_at: string | null
@@ -1857,6 +2297,7 @@ export type Database = {
         }
         Insert: {
           amount: number
+          attachment_document_id?: string | null
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
@@ -1876,6 +2317,7 @@ export type Database = {
         }
         Update: {
           amount?: number
+          attachment_document_id?: string | null
           created_at?: string
           created_by?: string | null
           deleted_at?: string | null
@@ -1894,6 +2336,13 @@ export type Database = {
           updated_by?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "transactions_attachment_document_id_fkey"
+            columns: ["attachment_document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "transactions_created_by_fkey"
             columns: ["created_by"]
@@ -1936,6 +2385,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      adjust_loan_schedule: {
+        Args: {
+          actor_profile_id: string
+          adjustment_field: string
+          amount_delta: number
+          explanation: string
+          loan_schedule_record_id: string
+        }
+        Returns: string
+      }
       bootstrap_first_admin: {
         Args: {
           account_display_name: string
@@ -1945,6 +2404,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      confirm_import_job: { Args: { target_job_id: string }; Returns: number }
       create_employee_account: {
         Args: {
           account_username: string
@@ -1955,12 +2415,148 @@ export type Database = {
         }
         Returns: undefined
       }
+      create_rebate_record: {
+        Args: {
+          actor_profile_id: string
+          calculated_amount?: number
+          calculation_source: string
+          employee_record_id: string
+          loan_record_id?: string
+          override_reason?: string
+          rebate_amount: number
+          rebate_date: string
+          rebate_reason?: string
+          rebate_type_record_id: string
+          reference_number?: string
+        }
+        Returns: string
+      }
+      get_admin_employee_page: {
+        Args: {
+          actor_profile_id: string
+          category_filter?: string
+          cursor_id?: string
+          cursor_sort_key?: string
+          department_filter?: string
+          include_archived?: boolean
+          page_size?: number
+          search_query?: string
+          status_filter?: string
+        }
+        Returns: {
+          account_status: string
+          active_loan_count: number
+          complete_name: string
+          deleted_at: string
+          department: string
+          document_count: number
+          email_address: string
+          employee_number: string
+          employment_category: string
+          employment_status: string
+          id: string
+          leave_balance_count: number
+          mobile_number: string
+          position_title: string
+          profile_id: string
+          sort_key: string
+          transaction_count: number
+          username: string
+        }[]
+      }
+      get_admin_transaction_page: {
+        Args: {
+          actor_profile_id: string
+          cursor_date?: string
+          cursor_id?: string
+          date_from?: string
+          date_to?: string
+          employee_filter?: string
+          include_archived?: boolean
+          page_size?: number
+          search_query?: string
+          transaction_type_filter?: string
+        }
+        Returns: Json
+      }
+      get_my_financial_overview: { Args: never; Returns: Json }
+      get_my_statement: {
+        Args: {
+          category_filter?: string
+          end_date?: string
+          start_date?: string
+          type_filter?: string
+        }
+        Returns: Json
+      }
+      manage_document: {
+        Args: {
+          change_reason?: string
+          operation: string
+          payload?: Json
+          target_id?: string
+        }
+        Returns: string
+      }
+      manage_employee_record: {
+        Args: {
+          actor_profile_id: string
+          change_reason?: string
+          employee_record_id?: string
+          operation: string
+          payload?: Json
+        }
+        Returns: string
+      }
+      manage_ledger_transaction: {
+        Args: {
+          actor_profile_id: string
+          change_reason?: string
+          operation: string
+          payload?: Json
+          transaction_record_id?: string
+        }
+        Returns: string
+      }
+      manage_loan_record: {
+        Args: {
+          actor_profile_id: string
+          change_reason?: string
+          loan_record_id?: string
+          operation: string
+          payload?: Json
+          schedule_rows?: Json
+        }
+        Returns: string
+      }
+      record_loan_payment: {
+        Args: {
+          actor_profile_id: string
+          loan_record_id: string
+          payment_amount: number
+          payment_date: string
+          payment_notes?: string
+          reference_number?: string
+          transaction_type_id: string
+        }
+        Returns: string
+      }
       record_password_reset: {
         Args: {
           actor_profile_id: string
           generated_password: boolean
           reset_reason: string
           target_profile_id: string
+        }
+        Returns: undefined
+      }
+      replace_loan_schedule: {
+        Args: {
+          actor_profile_id: string
+          change_reason: string
+          loan_record_id: string
+          p_schedule_method: string
+          schedule_rows: Json
         }
         Returns: undefined
       }
@@ -2105,3 +2701,4 @@ export const Constants = {
     Enums: {},
   },
 } as const
+
