@@ -64,7 +64,7 @@ export async function buildPdf(filters: ReportFilters) {
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
   const logo = await pdf.embedPng(await readFile(logoPath()));
   const pages: PDFPage[] = [];
-  let page: PDFPage;
+  let page!: PDFPage;
   let y = 0;
   const newPage = () => {
     page = pdf.addPage([841.89, 595.28]); pages.push(page); y = 548;
