@@ -15,6 +15,24 @@ const supabasePublishableKeySchema = z
     "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY must be a Supabase publishable key.",
   );
 
+function isLegacyServiceRoleKey(key: string) {
+  const parts = key.split(".");
+  if (parts.length !== 3) {
+    return false;
+  }
+
+  try {
+    const normalizedPayload = parts[1]
+      .replaceAll("-", "+")
+      .replaceAll("_", "/")
+      .padEnd(Math.ceil(parts[1].length / 4) * 4, "=");
+    const payload = JSON.parse(atob(normalizedPayload)) as { role?: unknown };
+    return payload.role === "service_role";
+  } catch {
+    return false;
+  }
+}
+
 export const publicEnvironmentSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z
     .url("NEXT_PUBLIC_SUPABASE_URL must be a valid URL.")
@@ -30,8 +48,8 @@ export const serverEnvironmentSchema = publicEnvironmentSchema.extend({
     .string()
     .trim()
     .refine(
-      (key) => key.startsWith("sb_secret_"),
-      "SUPABASE_SECRET_KEY must be a current Supabase secret key.",
+      (key) => key.startsWith("sb_secret_") || isLegacyServiceRoleKey(key),
+      "SUPABASE_SECRET_KEY must be a Supabase secret key or legacy service-role key.",
     ),
   AUTH_RATE_LIMIT_SECRET: z
     .string()
