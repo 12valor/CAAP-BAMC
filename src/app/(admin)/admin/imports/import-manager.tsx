@@ -67,16 +67,10 @@ export function ImportManager({
   }
   return (
     <div className="space-y-6">
-      <header className="flex flex-col gap-4 border-b pb-5 lg:flex-row lg:items-end lg:justify-between">
+      <header className="flex flex-col gap-4 border-b pb-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-primary">
-            Validated migration
-          </p>
-          <h1 className="text-3xl font-bold">Excel imports</h1>
-          <p className="mt-2 max-w-3xl text-muted-foreground">
-            Upload creates a validation preview only. An administrator must
-            explicitly confirm an error-free job before records are written.
-          </p>
+          <h1 className="text-2xl font-bold">Excel imports</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Validate and confirm before importing.</p>
         </div>
         <Button variant="outline" asChild>
           <a href="/api/imports/template">
@@ -86,10 +80,7 @@ export function ImportManager({
         </Button>
       </header>
       <section className="rounded-xl border bg-card p-5">
-        <h2 className="font-semibold">1. Upload and validate</h2>
-        <p className="mb-4 text-sm text-muted-foreground">
-          The raw workbook is parsed in memory and not retained. Maximum 15 MB.
-        </p>
+        <h2 className="mb-4 font-semibold">Upload workbook</h2>
         <div className="flex flex-col gap-2 sm:flex-row">
           <Input
             ref={input}

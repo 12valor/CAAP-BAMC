@@ -132,10 +132,7 @@ export default async function AdminDashboardPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Administrator workspace"
         title="Dashboard"
-        description="Operational and financial summaries calculated on the server."
-        preview={false}
         actions={
           <Button asChild>
             <Link href="/admin/reports">Open reports</Link>
@@ -171,7 +168,7 @@ export default async function AdminDashboardPage({
         className="grid gap-4 md:grid-cols-2 xl:grid-cols-3"
         aria-label="Dashboard totals"
       >
-        {cards.map(({ label, value, helper, icon: Icon }) => (
+        {cards.map(({ label, value, icon: Icon }) => (
           <Card key={label}>
             <CardHeader className="flex-row items-start justify-between">
               <div>
@@ -180,9 +177,6 @@ export default async function AdminDashboardPage({
               </div>
               <Icon className="size-5 text-primary" />
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">{helper}</p>
-            </CardContent>
           </Card>
         ))}
       </section>
@@ -190,9 +184,6 @@ export default async function AdminDashboardPage({
         <Card>
           <CardHeader>
             <CardTitle>Leave summary</CardTitle>
-            <CardDescription>
-              Current posted balances grouped by configured leave type.
-            </CardDescription>
           </CardHeader>
           <CardContent>
             {s.leave.length ? (
@@ -226,9 +217,6 @@ export default async function AdminDashboardPage({
         <Card>
           <CardHeader>
             <CardTitle>Document storage</CardTitle>
-            <CardDescription>
-              Private archive metadata only; no signed links are exposed here.
-            </CardDescription>
           </CardHeader>
           <CardContent className="grid grid-cols-2 gap-4">
             <div>
@@ -250,9 +238,6 @@ export default async function AdminDashboardPage({
       <Card>
         <CardHeader>
           <CardTitle>Recent transactions</CardTitle>
-          <CardDescription>
-            Latest eight records. Use Reports for complete filtered results.
-          </CardDescription>
         </CardHeader>
         <CardContent>
           {s.recent_transactions.length ? (
@@ -301,7 +286,6 @@ export default async function AdminDashboardPage({
         <CardHeader className="flex-row items-center justify-between">
           <div>
             <CardTitle>Recent imports</CardTitle>
-            <CardDescription>Latest validated import jobs.</CardDescription>
           </div>
           <Upload className="size-5 text-primary" />
         </CardHeader>

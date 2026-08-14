@@ -1,18 +1,9 @@
 import type { Metadata } from "next";
-import { CalendarDays } from "lucide-react";
 
-import { SectionPlaceholder } from "@/components/preview/section-placeholder";
+import { PageHeader } from "@/components/layout/page-header";
 
 export const metadata: Metadata = { title: "Leave Records" };
 
 export default function LeaveRecordsPage() {
-  return (
-    <SectionPlaceholder
-      eyebrow="Administrator workspace"
-      title="Leave Records"
-      description="Leave balance and history management placeholder."
-      actionLabel="Add leave record"
-      icon={CalendarDays}
-    />
-  );
+  return <div className="space-y-6"><PageHeader title="Leave records" /><div className="rounded-lg border p-10 text-center text-sm text-muted-foreground">No leave records available.</div></div>;
 }

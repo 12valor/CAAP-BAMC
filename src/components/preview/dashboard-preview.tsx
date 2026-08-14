@@ -19,7 +19,6 @@ export function DashboardPreview({ role }: { role: NavigationRole }) {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow={isAdmin ? "Administrator workspace" : "Employee self-service"}
         title={isAdmin ? "Dashboard" : "Overview"}
         description={
           isAdmin

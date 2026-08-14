@@ -175,16 +175,10 @@ export function DocumentArchive({
   };
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 border-b pb-5 lg:flex-row lg:items-end lg:justify-between">
+      <div className="flex flex-col gap-4 border-b pb-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-primary">
-            Private archive
-          </p>
-          <h1 className="text-3xl font-bold">{title}</h1>
-          <p className="mt-2 text-muted-foreground">
-            Private files are organized by employee, then category. Signed links
-            expire after five minutes.
-          </p>
+          <h1 className="text-2xl font-bold">{title}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Private files · links expire in 5 minutes</p>
         </div>
         <div className="flex gap-2">
           <Button

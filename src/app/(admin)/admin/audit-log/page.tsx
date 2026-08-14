@@ -222,10 +222,7 @@ function Header({ tab }: { tab: string }) {
   return (
     <>
       <PageHeader
-        eyebrow="Administrator workspace"
-        title="Audit viewer"
-        description="Read-only operational and authentication activity with sensitive values removed."
-        preview={false}
+        title="Audit log"
       />
       <nav className="flex gap-2">
         <Button variant={tab === "records" ? "default" : "outline"} asChild>

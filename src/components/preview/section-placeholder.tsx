@@ -26,7 +26,6 @@ export function SectionPlaceholder({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow={eyebrow}
         title={title}
         description={description}
         actions={<PreviewPrimaryAction label={actionLabel} />}
