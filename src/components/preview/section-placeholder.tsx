@@ -9,7 +9,6 @@ import { PreviewPrimaryAction } from "@/components/patterns/preview-primary-acti
 type SectionPlaceholderProps = {
   actionLabel: string;
   description: string;
-  eyebrow: string;
   icon: LucideIcon;
   showFilters?: boolean;
   title: string;
@@ -18,7 +17,6 @@ type SectionPlaceholderProps = {
 export function SectionPlaceholder({
   actionLabel,
   description,
-  eyebrow,
   icon,
   showFilters = true,
   title,

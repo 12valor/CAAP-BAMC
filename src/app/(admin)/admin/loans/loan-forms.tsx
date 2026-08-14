@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @typescript-eslint/no-unused-vars -- replacement rows omit persisted fields. */
+
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Calculator } from "lucide-react";
@@ -16,7 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { calculateLoanPreview, type CalculationStrategy, type RoundingMethod } from "@/lib/finance/calculations";
 
-function runAction(action: (data: FormData) => Promise<{ error?: string; success?: string }>, data: FormData, done: () => void, start: React.TransitionStartFunction) { start(async () => { const result = await action(data); if (result.error) return toast.error(result.error); toast.success(result.success); done(); }); }
+function runAction(action: (data: FormData) => Promise<{ error?: string; success?: string }>, data: FormData, done: () => void, start: React.TransitionStartFunction) { start(async () => { const result = await action(data); if (result.error) { toast.error(result.error); return; } toast.success(result.success); done(); }); }
 
 export function NewLoanForm({ employees, loanTypes }: { employees: LoanEmployee[]; loanTypes: LoanTypeOption[] }) {
   const router = useRouter(); const [pending, startTransition] = useTransition(); const [principal, setPrincipal] = useState("10000.00"); const [rate, setRate] = useState("0"); const [term, setTerm] = useState(12); const [start, setStart] = useState(new Date().toISOString().slice(0, 10)); const [frequency, setFrequency] = useState("monthly"); const [strategy, setStrategy] = useState<CalculationStrategy>("manual"); const [rounding, setRounding] = useState<RoundingMethod>("half_up"); const [source, setSource] = useState<"manual" | "system">("manual"); const [scheduleJson, setScheduleJson] = useState("");
