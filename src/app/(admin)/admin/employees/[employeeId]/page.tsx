@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { saveEmployeeAction as saveEmployeeRecordAction } from "../actions";
+import { Pencil } from "lucide-react";
+
+import { AccountManagement, type EmployeeAccountRow } from "../account-management";
+import { EmployeeSafetyActions } from "../employee-safety-actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -15,7 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
 import { requireRole } from "@/lib/permissions/authorization";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -102,9 +102,6 @@ export default async function EmployeeDetailPage({
   ]
     .filter(Boolean)
     .join(" ");
-  const saveEmployeeAction = saveEmployeeRecordAction as unknown as (
-    formData: FormData,
-  ) => Promise<void>;
   const records: Record<Tab, Array<Record<string, unknown>>> = {
     overview: [],
     transactions: transactions.data ?? [],
@@ -115,32 +112,26 @@ export default async function EmployeeDetailPage({
     activity: activity.data ?? [],
   };
 
-  const fields = [
-    ["employeeNumber", "Employee number", employee.employee_number],
-    ["firstName", "First name", employee.first_name],
-    ["middleName", "Middle name", employee.middle_name],
-    ["lastName", "Last name", employee.last_name],
-    ["suffix", "Suffix", employee.suffix],
-    ["department", "Department", employee.department],
-    ["positionTitle", "Position", employee.position_title],
-    ["employmentCategory", "Employment category", employee.employment_category],
-    ["employmentStatus", "Employment status", employee.employment_status],
-    ["emailAddress", "Email", employee.email_address],
-    ["mobileNumber", "Mobile", employee.mobile_number],
-    ["addressText", "Address", employee.address_text],
-  ] as const;
+  const [{ data: username }, { data: profile }] = employee.profile_id
+    ? await Promise.all([
+        admin.from("account_usernames").select("username").eq("profile_id", employee.profile_id).is("deleted_at", null).maybeSingle(),
+        admin.from("profiles").select("status").eq("id", employee.profile_id).maybeSingle(),
+      ])
+    : [{ data: null }, { data: null }];
+  const accountRows: EmployeeAccountRow[] = [{ employeeId: employee.id, employeeNumber: employee.employee_number, name, position: employee.position_title, profileId: employee.profile_id, username: username?.username ?? null, status: profile?.status === "active" ? "active" : employee.profile_id ? "disabled" : null }];
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="border-b pb-4">
         <Button asChild variant="link" className="px-0">
           <Link href="/admin/employees">← Employee directory</Link>
         </Button>
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-semibold">{name}</h1>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-3"><h1 className="text-2xl font-semibold">{name}</h1>
           <Badge variant={employee.deleted_at ? "secondary" : "success"}>
             {employee.deleted_at ? "Archived" : employee.employment_status}
-          </Badge>
+          </Badge></div>
+          <div className="flex gap-2">{!employee.deleted_at ? <Button asChild variant="outline"><Link href={`/admin/employees/${employee.id}/edit`}><Pencil />Edit</Link></Button> : null}<EmployeeSafetyActions employeeId={employee.id} archived={Boolean(employee.deleted_at)} /></div>
         </div>
         <p className="text-muted-foreground">
           {employee.employee_number} · {employee.department ?? "No department"}{" "}
@@ -167,7 +158,7 @@ export default async function EmployeeDetailPage({
       </nav>
 
       {tab === "overview" ? (
-        <div className="grid gap-6 xl:grid-cols-[1fr_2fr]">
+        <div className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Contact and employment</CardTitle>
@@ -190,47 +181,7 @@ export default async function EmployeeDetailPage({
               </p>
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Edit employee</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form
-                action={saveEmployeeAction}
-                className="grid gap-4 sm:grid-cols-2"
-              >
-                <input type="hidden" name="employeeId" value={employee.id} />
-                {fields.map(([key, label, value]) => (
-                  <div className="space-y-2" key={key}>
-                    <Label htmlFor={key}>{label}</Label>
-                    <Input
-                      id={key}
-                      name={key}
-                      defaultValue={value ?? ""}
-                      required={[
-                        "employeeNumber",
-                        "firstName",
-                        "lastName",
-                        "employmentCategory",
-                        "employmentStatus",
-                      ].includes(key)}
-                    />
-                  </div>
-                ))}
-                <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="notes">Notes</Label>
-                  <Textarea
-                    id="notes"
-                    name="notes"
-                    defaultValue={employee.notes ?? ""}
-                  />
-                </div>
-                <div className="sm:col-span-2">
-                  <Button type="submit">Save changes</Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
+          <AccountManagement employees={accountRows} />
         </div>
       ) : (
         <Card>

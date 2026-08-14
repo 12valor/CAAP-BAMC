@@ -13,7 +13,7 @@ export default async function TransactionsPage({ searchParams }: Props) {
   const principal = await requireRole("admin");
   const query = await searchParams;
   const admin = createAdminClient();
-  const [page, employees, types, documents] = await Promise.all([
+  const [page, employees, types] = await Promise.all([
     admin.rpc("get_admin_transaction_page", {
       actor_profile_id: principal.id, search_query: query.q || undefined,
       employee_filter: filterId(query.employee), transaction_type_filter: filterId(query.type),
@@ -23,13 +23,11 @@ export default async function TransactionsPage({ searchParams }: Props) {
     }),
     admin.from("employee_profiles").select("id,employee_number,first_name,last_name").is("deleted_at", null).order("last_name"),
     admin.from("transaction_types").select("id,name,direction,financial_category_id,reference_strategy").eq("is_active", true).is("deleted_at", null).order("name"),
-    admin.from("documents").select("id,employee_id,original_filename").eq("status", "available").is("deleted_at", null).limit(500),
   ]);
-  if (page.error || employees.error || types.error || documents.error) throw new Error("Unable to load the transaction ledger.");
+  if (page.error || employees.error || types.error) throw new Error("Unable to load the transaction ledger.");
   return <div className="space-y-6">
-    <PageHeader eyebrow="Administrator workspace" preview={false} title="Debit and credit ledger"
-      description="Post positive financial amounts; transaction direction controls the running balance effect." />
+    <PageHeader title="Transactions" />
     <TransactionManager page={page.data as unknown as TransactionPageData} employees={employees.data ?? []}
-      types={types.data ?? []} documents={documents.data ?? []} filters={query} />
+      types={types.data ?? []} filters={query} />
   </div>;
 }

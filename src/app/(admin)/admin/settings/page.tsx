@@ -11,5 +11,5 @@ export default async function SettingsPage(){
  const results=await Promise.all(kinds.map(kind=>admin.from(kind).select("*").is("deleted_at",null).order("name")));
  if(results.some(r=>r.error))throw new Error("Unable to load financial settings.");
  const groups=Object.fromEntries(kinds.map((kind,index)=>[kind,results[index].data??[]])) as Record<string,SettingRow[]>;
- return <div className="space-y-6"><PageHeader eyebrow="Administrator workspace" preview={false} title="Configurable financial settings" description="Maintain debit and credit types, loan and rebate rules, effective dates, and safe structured calculation options."/><FinancialSettingsManager groups={groups}/></div>;
+ return <div className="space-y-6"><PageHeader title="Financial settings"/><FinancialSettingsManager groups={groups}/></div>;
 }

@@ -39,8 +39,7 @@ export default async function EmployeesPage({ searchParams }: Props) {
   const hasNext = rows.length > 25;
   const shownRows = hasNext ? rows.slice(0, 25) : rows;
   return <div className="space-y-6">
-    <PageHeader eyebrow="Administrator workspace" preview={false} title="Employee master records"
-      description="Search, maintain, archive, and issue access for employee records." />
+    <PageHeader title="Employees" />
     <EmployeeManager rows={shownRows} hasNext={hasNext} filters={filters}
       departments={[...new Set((options ?? []).map((row) => row.department).filter(Boolean))] as string[]}
       categories={[...new Set((options ?? []).map((row) => row.employment_category).filter(Boolean))] as string[]} />

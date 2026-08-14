@@ -4,13 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Bell,
   LogOut,
   Menu,
   PanelLeftClose,
   PanelLeftOpen,
 } from "lucide-react";
-import { toast } from "sonner";
 
 import {
   navigationByRole,
@@ -20,7 +18,6 @@ import {
 import { logoutAction } from "@/app/auth-actions";
 import { CaapLogo } from "@/components/branding/caap-logo";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -153,9 +150,6 @@ function ProductIdentity({ collapsed = false }: { collapsed?: boolean }) {
         <p className="truncate text-sm font-bold tracking-wide text-sidebar-foreground">
           CAAP BAMC
         </p>
-        <p className="truncate text-xs text-muted-foreground">
-          Financial Records
-        </p>
       </div>
     </div>
   );
@@ -220,9 +214,6 @@ export function AppShell({ children, role, user }: AppShellProps) {
             </div>
             <div className={cn("min-w-0", collapsed && "sr-only")}>
               <p className="truncate text-sm font-semibold">{user.displayName}</p>
-              <p className="truncate text-xs text-muted-foreground">
-                {user.roleLabel}
-              </p>
             </div>
           </div>
         </aside>
@@ -266,9 +257,6 @@ export function AppShell({ children, role, user }: AppShellProps) {
                     </div>
                     <div>
                       <p className="text-sm font-semibold">{user.displayName}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {user.roleLabel}
-                      </p>
                     </div>
                   </div>
                 </SheetContent>
@@ -293,24 +281,10 @@ export function AppShell({ children, role, user }: AppShellProps) {
                 <p className="truncate text-sm font-semibold text-foreground">
                   {currentItem.label}
                 </p>
-                <p className="hidden truncate text-xs text-muted-foreground sm:block">
-                  {user.roleLabel}
-                </p>
               </div>
             </div>
 
             <div className="flex shrink-0 items-center gap-2">
-              <Button
-                variant="outline"
-                aria-label="Notifications, 0 unread"
-                onClick={() => toast.info("No preview notifications")}
-              >
-                <Bell aria-hidden="true" />
-                <span className="hidden sm:inline">Notifications</span>
-                <Badge variant="info" className="ml-1">
-                  0
-                </Badge>
-              </Button>
               <form action={logoutAction}>
                 <Button type="submit" variant="outline">
                   <LogOut aria-hidden="true" />

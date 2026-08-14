@@ -1,0 +1,5 @@
+import { AdminFormLayout } from "@/components/admin/admin-form-layout";
+import { requireRole } from "@/lib/permissions/authorization";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { NewLoanForm } from "../loan-forms";
+export default async function NewLoanPage() { await requireRole("admin"); const admin = createAdminClient(); const [employees, types] = await Promise.all([admin.from("employee_profiles").select("id,employee_number,first_name,last_name").is("deleted_at", null).order("last_name"), admin.from("loan_types").select("id,code,name,calculation_strategy,default_rate,default_term_count,installment_frequency,rounding_method").eq("is_active", true).is("deleted_at", null).order("name")]); if (employees.error || types.error) throw new Error("Unable to load loan options."); return <AdminFormLayout title="Create loan" backHref="/admin/loans" note="Manual values remain the default until official formulas are approved."><NewLoanForm employees={employees.data ?? []} loanTypes={types.data ?? []} /></AdminFormLayout>; }

@@ -1,0 +1,27 @@
+"use client";
+
+import { useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { Calculator } from "lucide-react";
+import { toast } from "sonner";
+
+import { createRebateAction } from "./actions";
+import { AdminFormActions } from "@/components/admin/admin-form-layout";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { calculateRebatePreview } from "@/lib/finance/calculations";
+
+export type RebateEmployee = { id: string; employee_number: string; first_name: string; last_name: string };
+export type RebateTypeOption = { id: string; code: string; name: string; calculation_strategy: string; fixed_amount: number | null; percentage_rate: number | null; balance_effect: string; rounding_method: string };
+export type RebateLoan = { id: string; employee_id: string; account_number: string | null; principal_amount: number; status: string };
+
+export function RebateForm({ employees, types, loans }: { employees: RebateEmployee[]; types: RebateTypeOption[]; loans: RebateLoan[] }) {
+  const router = useRouter(); const [pending, startTransition] = useTransition(); const [employeeId, setEmployeeId] = useState(""); const [loanId, setLoanId] = useState(""); const [typeId, setTypeId] = useState(""); const [base, setBase] = useState("0.00"); const [source, setSource] = useState<"manual" | "system">("manual");
+  const selectedType = types.find((type) => type.id === typeId);
+  const preview = useMemo(() => selectedType ? calculateRebatePreview({ baseAmount: base, strategy: selectedType.calculation_strategy, fixedAmount: String(selectedType.fixed_amount ?? 0), percentage: String(selectedType.percentage_rate ?? 0), rounding: selectedType.rounding_method }) : null, [selectedType, base]);
+  const relatedLoans = loans.filter((loan) => loan.employee_id === employeeId);
+  return <form onSubmit={(event) => { event.preventDefault(); startTransition(async () => { const result = await createRebateAction(new FormData(event.currentTarget)); if (result.error) return toast.error(result.error); toast.success(result.success); router.push("/admin/rebates"); router.refresh(); }); }}><div className="grid gap-5 sm:grid-cols-2"><div className="space-y-2"><Label>Employee</Label><Select name="employeeId" value={employeeId} onValueChange={setEmployeeId}><SelectTrigger className="w-full"><SelectValue /></SelectTrigger><SelectContent>{employees.map((employee) => <SelectItem key={employee.id} value={employee.id}>{employee.employee_number} · {employee.last_name}</SelectItem>)}</SelectContent></Select></div><div className="space-y-2"><Label>Rebate type</Label><Select name="rebateTypeId" value={typeId} onValueChange={setTypeId}><SelectTrigger className="w-full"><SelectValue /></SelectTrigger><SelectContent>{types.map((type) => <SelectItem key={type.id} value={type.id}>{type.code} · {type.name}</SelectItem>)}</SelectContent></Select></div><div className="space-y-2"><Label>Related loan</Label><Select name="loanId" value={loanId || "none"} onValueChange={(value) => { setLoanId(value === "none" ? "" : value); const loan = loans.find((item) => item.id === value); if (loan) setBase(String(loan.principal_amount)); }}><SelectTrigger className="w-full"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="none">No loan</SelectItem>{relatedLoans.map((loan) => <SelectItem key={loan.id} value={loan.id}>{loan.account_number ?? loan.id}</SelectItem>)}</SelectContent></Select></div><Field label="Date" name="date" type="date" value={new Date().toISOString().slice(0, 10)} required /><div className="space-y-2"><Label>Calculation base</Label><Input value={base} onChange={(event) => setBase(event.target.value)} inputMode="decimal" /></div><div className="space-y-2"><Label>Source</Label><Select name="source" value={source} onValueChange={(value) => setSource(value as "manual" | "system")}><SelectTrigger className="w-full"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="manual">Manual</SelectItem><SelectItem value="system">System calculated</SelectItem></SelectContent></Select></div><div className="border bg-muted/20 p-4 sm:col-span-2"><p className="flex items-center gap-2 font-semibold"><Calculator className="size-4" />Preview</p><p className="mt-2 text-sm">{selectedType?.calculation_strategy ?? "Select a type"} · ₱{preview ?? "—"} · {selectedType?.balance_effect ?? "—"}</p></div><input type="hidden" name="calculatedAmount" value={source === "system" ? preview ?? "" : ""} /><Field label="Recorded amount" name="amount" value={source === "system" ? preview ?? "" : ""} required key={`${source}-${preview}`} /><Field label="Reference" name="reference" /><div className="space-y-2 sm:col-span-2"><Label>Override reason</Label><Textarea name="overrideReason" /></div><div className="space-y-2 sm:col-span-2"><Label>Notes</Label><Textarea name="reason" /></div></div><AdminFormActions cancelHref="/admin/rebates" pending={pending} submitLabel="Add rebate" /></form>;
+}
+function Field({ label, name, type, value, required }: { label: string; name: string; type?: string; value?: string; required?: boolean }) { return <div className="space-y-2"><Label htmlFor={name}>{label}</Label><Input id={name} name={name} type={type} inputMode={name === "amount" ? "decimal" : undefined} defaultValue={value} required={required} /></div>; }
