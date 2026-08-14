@@ -13,6 +13,10 @@ function philippineDate(value: string | null) {
   }).format(new Date(`${value}T00:00:00+08:00`));
 }
 
+function financialValue(value: string | null) {
+  return value === null ? "Not available" : formatExactPeso(value);
+}
+
 export function statementPeriod(statement: EmployeeStatement) {
   const { start, end } = statement.period;
   if (!start && !end) return "All Transactions";
@@ -113,7 +117,7 @@ export function StatementDocument({
             <tbody>
               <tr className="font-semibold">
                 <td className="number-cell">
-                  {formatExactPeso(statement.summary.current_balance)}
+                  {financialValue(statement.summary.current_balance)}
                 </td>
                 <td className="number-cell">
                   {formatExactPeso(statement.summary.selected_debit)}
@@ -122,7 +126,9 @@ export function StatementDocument({
                   {formatExactPeso(statement.summary.selected_credit)}
                 </td>
                 <td className="number-cell">
-                  {formatExactPeso(statement.summary.outstanding_loan_balance)}
+                  {financialValue(
+                    statement.summary.outstanding_loan_balance,
+                  )}
                 </td>
               </tr>
             </tbody>
@@ -213,7 +219,7 @@ export function StatementDocument({
                     </td>
                     <td>{philippineDate(loan.start_date)}</td>
                     <td>
-                      {loan.term_count
+                      {loan.term_count && loan.installment_frequency
                         ? `${loan.term_count} · ${loan.installment_frequency.replaceAll("_", " ")}`
                         : "—"}
                     </td>
@@ -221,7 +227,7 @@ export function StatementDocument({
                       {formatExactPeso(loan.principal)}
                     </td>
                     <td className="number-cell font-medium">
-                      {formatExactPeso(loan.outstanding_balance)}
+                      {financialValue(loan.outstanding_balance)}
                     </td>
                     <td>{philippineDate(loan.next_payment_date)}</td>
                     <td className="capitalize">
@@ -270,10 +276,10 @@ export function StatementDocument({
                             {formatExactPeso(schedule.scheduled_amount)}
                           </td>
                           <td className="number-cell">
-                            {formatExactPeso(schedule.amount_paid)}
+                            {financialValue(schedule.amount_paid)}
                           </td>
                           <td className="number-cell">
-                            {formatExactPeso(schedule.remaining_amount)}
+                            {financialValue(schedule.remaining_amount)}
                           </td>
                           <td className="capitalize">
                             {schedule.status.replaceAll("_", " ")}

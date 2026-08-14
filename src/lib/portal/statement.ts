@@ -1,5 +1,9 @@
 import "server-only";
 
+import {
+  hasStatementSummary,
+  normalizeEmployeeStatement,
+} from "@/lib/portal/statement-normalize";
 import { createClient } from "@/lib/supabase/server";
 
 export type StatementFilters = {
@@ -22,8 +26,8 @@ export type StatementSchedule = {
   installment_number: number;
   due_date: string;
   scheduled_amount: string;
-  amount_paid: string;
-  remaining_amount: string;
+  amount_paid: string | null;
+  remaining_amount: string | null;
   status: string;
 };
 export type EmployeeStatement = {
@@ -37,10 +41,10 @@ export type EmployeeStatement = {
   period: { start: string | null; end: string | null };
   generated_at: string;
   summary: {
-    current_balance: string;
+    current_balance: string | null;
     selected_debit: string;
     selected_credit: string;
-    outstanding_loan_balance: string;
+    outstanding_loan_balance: string | null;
   };
   transactions: StatementTransaction[];
   totals: { debit: string; credit: string };
@@ -50,10 +54,10 @@ export type EmployeeStatement = {
     account_number: string | null;
     principal: string;
     total_payable: string;
-    outstanding_balance: string;
-    start_date: string;
+    outstanding_balance: string | null;
+    start_date: string | null;
     term_count: number | null;
-    installment_frequency: string;
+    installment_frequency: string | null;
     status: string;
     next_payment_date: string | null;
     schedules: StatementSchedule[];
@@ -86,5 +90,12 @@ export async function getMyStatement(filters: StatementFilters = {}) {
     category_filter: filters.category || undefined,
   });
   if (error) throw new Error("Statement data could not be loaded.");
-  return data as unknown as EmployeeStatement | null;
+
+  let overview: unknown;
+  if (!hasStatementSummary(data)) {
+    const result = await supabase.rpc("get_my_financial_overview");
+    if (!result.error) overview = result.data;
+  }
+
+  return normalizeEmployeeStatement(data, overview);
 }

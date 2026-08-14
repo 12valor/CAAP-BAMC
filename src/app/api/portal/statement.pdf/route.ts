@@ -32,6 +32,9 @@ function safeFilenamePart(value: string) {
 function pdfMoney(value: string | number | null | undefined) {
   return formatExactPeso(value).replace("₱", "PHP ");
 }
+function pdfFinancialValue(value: string | null) {
+  return value === null ? "Not available" : pdfMoney(value);
+}
 function pdfSafeText(value: string) {
   return value.replace(/[^\x20-\x7E\u00A0-\u00FF]/g, "-");
 }
@@ -165,10 +168,10 @@ export async function GET(request: Request) {
     "Outstanding loans",
   ]);
   row([
-    pdfMoney(statement.summary.current_balance),
+    pdfFinancialValue(statement.summary.current_balance),
     pdfMoney(statement.summary.selected_debit),
     pdfMoney(statement.summary.selected_credit),
-    pdfMoney(statement.summary.outstanding_loan_balance),
+    pdfFinancialValue(statement.summary.outstanding_loan_balance),
   ]);
 
   section("Transaction history");
@@ -212,9 +215,9 @@ export async function GET(request: Request) {
     row([
       `${loan.type} ${loan.account_number ?? ""}`,
       pdfMoney(loan.principal),
-      pdfMoney(loan.outstanding_balance),
+      pdfFinancialValue(loan.outstanding_balance),
       displayDate(loan.start_date),
-      loan.term_count
+      loan.term_count && loan.installment_frequency
         ? `${loan.term_count} ${loan.installment_frequency}`
         : "-",
       displayDate(loan.next_payment_date),
@@ -234,8 +237,8 @@ export async function GET(request: Request) {
         String(schedule.installment_number),
         displayDate(schedule.due_date),
         pdfMoney(schedule.scheduled_amount),
-        pdfMoney(schedule.amount_paid),
-        pdfMoney(schedule.remaining_amount),
+        pdfFinancialValue(schedule.amount_paid),
+        pdfFinancialValue(schedule.remaining_amount),
         schedule.status,
       ]);
   }
