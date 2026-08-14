@@ -9,7 +9,7 @@ import {
   recordLoginActivity,
 } from "@/lib/auth/login-activity";
 import type { LoginActionResult } from "@/lib/auth/types";
-import { roleHome } from "@/lib/permissions/authorization";
+import { roleHome } from "@/lib/auth/routing";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { loginSchema, type LoginInput } from "@/validation/auth";
@@ -99,7 +99,8 @@ export async function loginAction(
       }
       await recordLoginActivity({
         context,
-        outcome: account && profile && !enabled ? "disabled" : "invalid_credentials",
+        outcome:
+          account && profile && !enabled ? "disabled" : "invalid_credentials",
         profileId: account?.profile_id,
       });
       return { error: INVALID_LOGIN_MESSAGE };

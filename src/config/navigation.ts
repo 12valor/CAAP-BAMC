@@ -4,16 +4,13 @@ import {
   BadgePercent,
   CalendarDays,
   ChartNoAxesCombined,
-  FileText,
   FileUp,
   FolderOpen,
-  HandCoins,
   Landmark,
   LayoutDashboard,
   ReceiptText,
   ScrollText,
   Settings,
-  UserRound,
   Users,
 } from "lucide-react";
 
@@ -32,7 +29,8 @@ export const adminNavigation = [
     label: "Dashboard",
     href: "/admin/dashboard",
     icon: LayoutDashboard,
-    description: "Review the shared dashboard layout and system status patterns.",
+    description:
+      "Review the shared dashboard layout and system status patterns.",
     actionLabel: "Create record",
   },
   {
@@ -109,53 +107,11 @@ export const adminNavigation = [
 
 export const employeeNavigation = [
   {
-    label: "Overview",
-    href: "/portal/overview",
-    icon: LayoutDashboard,
-    description: "Read-only employee account summary placeholder.",
-    actionLabel: "Print overview",
-  },
-  {
     label: "Statement of Account",
-    href: "/portal/statement-of-account",
+    href: "/statement-of-account",
     icon: ReceiptText,
-    description: "Statement, transaction history, and date filters placeholder.",
+    description: "Read-only employee financial statement.",
     actionLabel: "Download statement",
-  },
-  {
-    label: "Loans",
-    href: "/portal/loans",
-    icon: HandCoins,
-    description: "Read-only employee loans and schedules placeholder.",
-    actionLabel: "Print loan details",
-  },
-  {
-    label: "Rebates",
-    href: "/portal/rebates",
-    icon: BadgePercent,
-    description: "Read-only employee rebate history placeholder.",
-    actionLabel: "Print rebates",
-  },
-  {
-    label: "Leave Records",
-    href: "/portal/leave-records",
-    icon: CalendarDays,
-    description: "Read-only leave balance and history placeholder.",
-    actionLabel: "Print leave history",
-  },
-  {
-    label: "Documents",
-    href: "/portal/documents",
-    icon: FileText,
-    description: "Authorized employee document folders placeholder.",
-    actionLabel: "View documents",
-  },
-  {
-    label: "Profile",
-    href: "/portal/profile",
-    icon: UserRound,
-    description: "Read-only employee profile placeholder.",
-    actionLabel: "Print profile",
   },
 ] as const satisfies readonly NavigationItem[];
 

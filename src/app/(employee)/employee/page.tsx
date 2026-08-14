@@ -1,11 +1,4 @@
-import type { Metadata } from "next";
-
-import { DashboardPreview } from "@/components/preview/dashboard-preview";
-
-export const metadata: Metadata = {
-  title: "Employee workspace",
-};
-
-export default function EmployeePage() {
-  return <DashboardPreview role="employee" />;
+import { redirect } from "next/navigation";
+export default function LegacyEmployeePage() {
+  redirect("/statement-of-account");
 }

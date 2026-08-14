@@ -44,7 +44,8 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname === "/portal" ||
     request.nextUrl.pathname.startsWith("/portal/") ||
     request.nextUrl.pathname === "/employee" ||
-    request.nextUrl.pathname.startsWith("/employee/");
+    request.nextUrl.pathname.startsWith("/employee/") ||
+    request.nextUrl.pathname === "/statement-of-account";
 
   if (protectedPath && (claimsError || !claimsData?.claims)) {
     const loginUrl = new URL("/login", request.url);

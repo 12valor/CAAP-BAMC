@@ -3,12 +3,11 @@ import "server-only";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { roleHome } from "@/lib/auth/routing";
 import type { AuthenticatedPrincipal } from "@/lib/auth/types";
 import { APP_ROLES, type AppRole } from "@/types/auth";
 
-export function roleHome(role: AppRole) {
-  return role === "admin" ? "/admin/dashboard" : "/portal/overview";
-}
+export { roleHome } from "@/lib/auth/routing";
 
 function isAppRole(role: string): role is AppRole {
   return APP_ROLES.includes(role as AppRole);

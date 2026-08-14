@@ -151,3 +151,75 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+@layer components {
+  .statement-heading {
+    @apply mb-3 border-b border-slate-500 pb-1 text-base font-bold tracking-wide text-slate-950 uppercase;
+  }
+
+  .statement-table {
+    @apply w-full border-collapse text-sm;
+  }
+
+  .statement-table th {
+    @apply border border-slate-400 bg-slate-100 px-2.5 py-2 text-left text-xs font-bold tracking-wide text-slate-700 uppercase;
+  }
+
+  .statement-table td {
+    @apply border border-slate-300 px-2.5 py-2 align-top;
+  }
+
+  .statement-table .number-cell {
+    @apply text-right whitespace-nowrap tabular-nums;
+  }
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 13mm 11mm 15mm;
+  }
+
+  html,
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 10pt;
+  }
+
+  .screen-only,
+  .screen-controls {
+    display: none !important;
+  }
+
+  .statement-paper {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: auto !important;
+  }
+
+  .statement-table {
+    font-size: 8.5pt;
+  }
+
+  .statement-table thead {
+    display: table-header-group;
+  }
+
+  .statement-table tr,
+  .schedule-group,
+  .statement-paper dl {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-section-break {
+    break-before: auto;
+    page-break-before: auto;
+  }
+
+  .statement-heading {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+}

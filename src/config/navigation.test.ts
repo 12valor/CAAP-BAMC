@@ -19,15 +19,9 @@ describe("role navigation", () => {
     ]);
   });
 
-  it("keeps the required employee destinations in review order", () => {
-    expect(employeeNavigation.map((item) => item.label)).toEqual([
-      "Overview",
-      "Statement of Account",
-      "Loans",
-      "Rebates",
-      "Leave Records",
-      "Documents",
-      "Profile",
+  it("exposes only the canonical statement destination for employees", () => {
+    expect(employeeNavigation.map((item) => [item.label, item.href])).toEqual([
+      ["Statement of Account", "/statement-of-account"],
     ]);
   });
 });

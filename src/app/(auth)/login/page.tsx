@@ -12,7 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getCurrentPrincipal, roleHome } from "@/lib/permissions/authorization";
+import { roleHome } from "@/lib/auth/routing";
+import { getCurrentPrincipal } from "@/lib/permissions/authorization";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -57,7 +58,7 @@ export default async function LoginPage({
 
         <Card className="gap-0 rounded-2xl border-0 bg-white py-0 shadow-2xl shadow-slate-950/30 ring-1 ring-white/80">
           <CardHeader className="gap-2 border-b border-border/70 bg-muted/35 px-6 py-5">
-            <CardTitle className="text-xl font-semibold">Sign in</CardTitle>
+            <CardTitle><h1 className="text-xl font-semibold">Sign in</h1></CardTitle>
             <CardDescription className="leading-6">
               Enter the username and password issued by the bookkeeper.
             </CardDescription>

@@ -1,4 +1,4 @@
 import { redirect } from "next/navigation";
-export default function LegacyPortalProfilePage() {
+export default function LegacyPortalPage() {
   redirect("/statement-of-account");
 }
