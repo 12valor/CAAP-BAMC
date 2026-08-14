@@ -38,7 +38,10 @@ export function EmployeeForm({ employee }: { employee?: EmployeeFormRecord }) {
       event.preventDefault();
       startTransition(async () => {
         const result = await saveEmployeeAction(new FormData(event.currentTarget));
-        if (result.error) return toast.error(result.error);
+        if (result.error) {
+          toast.error(result.error);
+          return;
+        }
         toast.success(result.success);
         router.push(result.id ? `/admin/employees/${result.id}` : cancelHref);
         router.refresh();

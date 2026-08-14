@@ -17,7 +17,7 @@ export function EmployeeAccountForm({ employeeId }: { employeeId: string }) {
   const [pending, startTransition] = useTransition();
   const [oneTimePassword, setOneTimePassword] = useState<string>();
   const form = useForm<CreateEmployeeAccountInput>({ resolver: zodResolver(createEmployeeAccountSchema), defaultValues: { employeeId, username: "", password: "" } });
-  return <AccountFormInner form={form} pending={pending} oneTimePassword={oneTimePassword} submit={(values) => startTransition(async () => { const result = await createEmployeeAccountAction(values); if (result.error) return toast.error(result.error); setOneTimePassword(result.oneTimePassword); toast.success(result.success); })} employeeId={employeeId} />;
+  return <AccountFormInner form={form} pending={pending} oneTimePassword={oneTimePassword} submit={(values) => startTransition(async () => { const result = await createEmployeeAccountAction(values); if (result.error) { toast.error(result.error); return; } setOneTimePassword(result.oneTimePassword); toast.success(result.success); })} employeeId={employeeId} />;
 }
 
 function AccountFormInner({ form, pending, oneTimePassword, submit, employeeId }: { form: ReturnType<typeof useForm<CreateEmployeeAccountInput>>; pending: boolean; oneTimePassword?: string; submit: (values: CreateEmployeeAccountInput) => void; employeeId: string }) {
