@@ -1,11 +1,13 @@
-import { FoundationPage } from "@/components/layout/foundation-page";
+import { redirect } from "next/navigation";
 
-export default function HomePage() {
-  return (
-    <FoundationPage
-      eyebrow="CAAP BAMC Bacolod-Silay Airport"
-      title="Employee Financial Records Management System"
-      description="The application foundation is ready. Business records and workflows will be introduced in later approved phases."
-    />
-  );
+import { roleHome } from "@/lib/auth/routing";
+import { getCurrentPrincipal } from "@/lib/permissions/authorization";
+
+export default async function HomePage() {
+  const principal = await getCurrentPrincipal();
+  if (principal) {
+    redirect(roleHome(principal.role));
+  }
+
+  redirect("/login");
 }
